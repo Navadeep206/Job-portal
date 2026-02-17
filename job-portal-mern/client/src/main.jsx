@@ -4,11 +4,15 @@ import App from "./App";
 import "./index.css";
 
 import { AuthProvider } from "./context/AuthContext";
+import { JobProvider } from "./context/JobContext";
 
 ReactDOM.createRoot(
   document.getElementById("root")
 ).render(
   <AuthProvider>
-    <App />
+    <JobProvider>
+      <App />
+    </JobProvider>
   </AuthProvider>
 );
+

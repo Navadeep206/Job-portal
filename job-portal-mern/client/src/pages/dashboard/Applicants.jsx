@@ -19,6 +19,22 @@ function Applicants() {
         fetchApplicants();
     }, []);
 
+    const handleStatusUpdate = async (appId, newStatus) => {
+        try {
+            const res = await API.put(`/applications/${appId}/status`, { status: newStatus });
+            if (res.data.success) {
+                setApplicants((prevApps) =>
+                    prevApps.map((app) =>
+                        app._id === appId ? { ...app, status: newStatus } : app
+                    )
+                );
+            }
+        } catch (err) {
+            console.error("Failed to update status", err);
+            alert("Failed to update status");
+        }
+    };
+
     if (loading) return <div className="text-center p-10">Loading applicants...</div>;
 
     const API_BASE = "http://localhost:5005"; // Hardcoded for file serve, or use env
@@ -40,9 +56,29 @@ function Applicants() {
                                     <h3 className="font-bold text-lg text-slate-800">{app.applicant?.name || "Unknown Candidate"}</h3>
                                     <p className="text-sm text-slate-500">{app.applicant?.email}</p>
                                 </div>
-                                <span className={`badge ${app.status === 'accepted' ? 'badge-success' : app.status === 'rejected' ? 'badge-error' : 'badge-warning'}`}>
-                                    {app.status}
-                                </span>
+                                <div className="flex items-center gap-2">
+                                    <span className={`badge ${app.status === 'accepted' ? 'badge-success' : app.status === 'rejected' ? 'badge-error' : 'badge-warning'}`}>
+                                        {app.status}
+                                    </span>
+                                    {String(app.status).toLowerCase().trim() === 'pending' && (
+                                        <div className="flex gap-2">
+                                            <button
+                                                onClick={() => handleStatusUpdate(app._id, 'accepted')}
+                                                className="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded text-xs font-medium transition-colors"
+                                                title="Accept"
+                                            >
+                                                Accept
+                                            </button>
+                                            <button
+                                                onClick={() => handleStatusUpdate(app._id, 'rejected')}
+                                                className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-xs font-medium transition-colors"
+                                                title="Reject"
+                                            >
+                                                Reject
+                                            </button>
+                                        </div>
+                                    )}
+                                </div>
                             </div>
 
                             <div className="space-y-2 mb-4">

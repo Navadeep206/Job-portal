@@ -2,6 +2,10 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import API from "../../services/api";
 import { useAuth } from "../../hooks/useAuth";
+import Input from "../../components/ui/Input";
+import Button from "../../components/ui/Button";
+import Card from "../../components/ui/Card";
+import FadeIn from "../../components/animations/FadeIn";
 
 // Enhanced Register.jsx with accessibility and debug logging
 function Register() {
@@ -12,6 +16,7 @@ function Register() {
     role: "user",
   });
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
 
@@ -22,11 +27,10 @@ function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
+    setLoading(true);
     console.log("DEBUG REGISTER: Form State:", form);
-    console.log("DEBUG REGISTER: Selected Role:", form.role);
 
     try {
-      console.log(`REGISTER: Sending request to /auth/register at ${API.defaults.baseURL}`);
       const res = await API.post("/auth/register", form);
       console.log("REGISTER: Success", res.data);
       login(res.data);
@@ -38,84 +42,95 @@ function Register() {
       if (err.code === "ERR_NETWORK") {
         setError("Network Error: Is the server running? Check port 5005.");
       }
+    } finally {
+      setLoading(false);
     }
   };
 
-
   return (
-    <div className="flex items-center justify-center p-4 fade-in" style={{ minHeight: "80vh" }}>
-      <div className="card" style={{ width: "100%", maxWidth: "500px" }}>
-        <h2 className="mb-4 text-center">Create an Account</h2>
-        <p className="text-center mb-6">Join us to find your dream job</p>
+    <div className="flex items-center justify-center min-h-[80vh] px-4">
+      <FadeIn delay={0.1}>
+        <Card className="w-full max-w-lg p-8 shadow-xl border-slate-100">
+          <div className="text-center mb-8">
+            <h2 className="text-3xl font-bold text-slate-900 mb-2">Create an Account</h2>
+            <p className="text-slate-500">Join us to find your dream job</p>
+          </div>
 
-        {error && <div className="badge badge-error mb-4 w-full text-center p-2">{error}</div>}
+          {error && (
+            <div className="bg-red-50 text-error text-sm p-3 rounded-xl mb-6 text-center border border-red-100">
+              {error}
+            </div>
+          )}
 
-        <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <label className="label" htmlFor="name">Full Name</label>
-            <input
-              id="name"
-              className="input"
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <Input
+              label="Full Name"
               name="name"
               autoComplete="name"
-              placeholder="John Doe"
               value={form.name}
               onChange={handleChange}
               required
             />
-          </div>
 
-          <div className="mb-4">
-            <label className="label" htmlFor="email">Email Address</label>
-            <input
-              id="email"
-              className="input"
+            <Input
+              label="Email Address"
               type="email"
               name="email"
               autoComplete="email"
-              placeholder="john@example.com"
               value={form.email}
               onChange={handleChange}
               required
             />
-          </div>
 
-          <div className="mb-4">
-            <label className="label" htmlFor="password">Password</label>
-            <input
-              id="password"
-              className="input"
+            <Input
+              label="Password"
               type="password"
               name="password"
               autoComplete="new-password"
-              placeholder="••••••••"
               value={form.password}
               onChange={handleChange}
               required
             />
-          </div>
 
-          <div className="mb-6">
-            <label className="label" htmlFor="role">I am a...</label>
-            <select
-              id="role"
-              className="input"
-              name="role"
-              value={form.role}
-              onChange={handleChange}
+            <div className="relative mb-4">
+              <label className="block text-sm font-medium text-slate-700 mb-1 ml-1" htmlFor="role">
+                I am a...
+              </label>
+              <select
+                id="role"
+                className="input-field appearance-none cursor-pointer"
+                name="role"
+                value={form.role}
+                onChange={handleChange}
+              >
+                <option value="user">Job Seeker</option>
+                <option value="recruiter">Recruiter</option>
+              </select>
+              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 pt-6 text-slate-500">
+                <svg className="h-4 w-4 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                  <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+                </svg>
+              </div>
+            </div>
+
+            <Button
+              type="submit"
+              variant="primary"
+              className="w-full shadow-lg shadow-primary/25 mt-4"
+              isLoading={loading}
             >
-              <option value="user">Job Seeker</option>
-              <option value="recruiter">Recruiter</option>
-            </select>
-          </div>
+              Register
+            </Button>
+          </form>
 
-          <button className="btn btn-primary w-full" style={{ width: "100%" }}>Register</button>
-        </form>
-
-        <p className="mt-4 text-center text-sm">
-          Already have an account? <Link to="/login">Login here</Link>
-        </p>
-      </div>
+          <p className="mt-6 text-center text-sm text-slate-500">
+            Already have an account?{" "}
+            <Link to="/login" className="text-primary font-semibold hover:text-primary-hover transition-colors">
+              Login here
+            </Link>
+          </p>
+        </Card>
+      </FadeIn>
     </div>
   );
 }

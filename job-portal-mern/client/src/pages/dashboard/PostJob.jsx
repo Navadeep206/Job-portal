@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import API from "../../services/api";
+import Input from "../../components/ui/Input";
+import Button from "../../components/ui/Button";
+import Card from "../../components/ui/Card";
 
 function PostJob() {
     const [form, setForm] = useState({
@@ -28,9 +31,6 @@ function PostJob() {
         setError("");
 
         try {
-            // Split requirements by comma or newline for array format if backend expects it
-            // For now assume backend handles string or string[] logic, but usually it's string.
-            // Let's assume standard object sending.
             await API.post("/jobs", form);
             navigate("/recruiter");
         } catch (err) {
@@ -41,54 +41,52 @@ function PostJob() {
     };
 
     return (
-        <div className="max-w-3xl mx-auto fade-in">
-            <div className="card">
-                <h2 className="text-2xl font-bold mb-6 text-slate-800 border-b pb-4">Post a New Job</h2>
+        <div className="max-w-4xl mx-auto fade-in py-10">
+            <Card className="p-8">
+                <div className="mb-8 border-b border-slate-100 pb-4">
+                    <h2 className="text-2xl font-bold text-slate-800">Post a New Job</h2>
+                    <p className="text-slate-500 mt-1">Fill in the details to find your next great hire.</p>
+                </div>
 
-                {error && <div className="bg-red-50 text-red-600 p-3 rounded mb-4 text-sm">{error}</div>}
+                {error && (
+                    <div className="bg-red-50 border border-red-100 text-red-600 p-4 rounded-xl mb-6 flex items-center gap-2">
+                        <span>⚠️</span> {error}
+                    </div>
+                )}
 
                 <form onSubmit={handleSubmit} className="space-y-6">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            <label className="label">Job Title</label>
-                            <input
-                                className="input"
-                                name="title"
-                                placeholder="e.g. Senior React Developer"
-                                value={form.title}
-                                onChange={handleChange}
-                                required
-                            />
-                        </div>
-                        <div>
-                            <label className="label">Company Name</label>
-                            <input
-                                className="input"
-                                name="company"
-                                placeholder="e.g. Tech Corp"
-                                value={form.company}
-                                onChange={handleChange}
-                                required
-                            />
-                        </div>
+                        <Input
+                            label="Job Title"
+                            name="title"
+                            placeholder="e.g. Senior React Developer"
+                            value={form.title}
+                            onChange={handleChange}
+                            required
+                        />
+                        <Input
+                            label="Company Name"
+                            name="company"
+                            placeholder="e.g. Tech Corp"
+                            value={form.company}
+                            onChange={handleChange}
+                            required
+                        />
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <div>
-                            <label className="label">Location</label>
-                            <input
-                                className="input"
-                                name="location"
-                                placeholder="e.g. Remote, San Francisco"
-                                value={form.location}
-                                onChange={handleChange}
-                                required
-                            />
-                        </div>
-                        <div>
-                            <label className="label">Job Type</label>
+                        <Input
+                            label="Location"
+                            name="location"
+                            placeholder="e.g. Remote, San Francisco"
+                            value={form.location}
+                            onChange={handleChange}
+                            required
+                        />
+
+                        <div className="relative mb-4">
                             <select
-                                className="input"
+                                className="input-field peer"
                                 name="type"
                                 value={form.type}
                                 onChange={handleChange}
@@ -99,11 +97,14 @@ function PostJob() {
                                 <option value="Internship">Internship</option>
                                 <option value="Remote">Remote</option>
                             </select>
+                            <label className="absolute left-3 top-0 text-xs text-primary transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-slate-400 peer-placeholder-shown:top-3 peer-focus:top-0 peer-focus:text-xs peer-focus:text-primary">
+                                Job Type
+                            </label>
                         </div>
-                        <div>
-                            <label className="label">Experience Level</label>
+
+                        <div className="relative mb-4">
                             <select
-                                className="input"
+                                className="input-field peer"
                                 name="experience"
                                 value={form.experience}
                                 onChange={handleChange}
@@ -116,74 +117,83 @@ function PostJob() {
                                 <option value="Director">Director</option>
                                 <option value="Executive">Executive</option>
                             </select>
+                            <label className="absolute left-3 top-0 text-xs text-primary transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-slate-400 peer-placeholder-shown:top-3 peer-focus:top-0 peer-focus:text-xs peer-focus:text-primary">
+                                Experience Level
+                            </label>
                         </div>
                     </div>
 
-                    <div>
-                        <label className="label">Salary Range (Optional)</label>
-                        <input
-                            className="input"
-                            name="salary"
-                            placeholder="e.g. $100k - $120k or Competitive"
-                            value={form.salary}
-                            onChange={handleChange}
-                        />
+                    <Input
+                        label="Salary Range (Optional)"
+                        name="salary"
+                        placeholder="e.g. $100k - $120k or Competitive"
+                        value={form.salary}
+                        onChange={handleChange}
+                    />
+
+                    <div className="space-y-4">
+                        <div className="relative">
+                            <textarea
+                                className="input-field peer min-h-[100px] pt-6"
+                                name="about"
+                                placeholder=" "
+                                value={form.about}
+                                onChange={handleChange}
+                                required
+                            />
+                            <label className="absolute left-3 top-2 text-xs text-primary transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-slate-400 peer-placeholder-shown:top-3 peer-focus:top-2 peer-focus:text-xs peer-focus:text-primary">
+                                About Company (Short Bio)
+                            </label>
+                        </div>
+
+                        <div className="relative">
+                            <textarea
+                                className="input-field peer min-h-[150px] pt-6"
+                                name="description"
+                                placeholder=" "
+                                value={form.description}
+                                onChange={handleChange}
+                                required
+                            />
+                            <label className="absolute left-3 top-2 text-xs text-primary transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-slate-400 peer-placeholder-shown:top-3 peer-focus:top-2 peer-focus:text-xs peer-focus:text-primary">
+                                Job Description
+                            </label>
+                        </div>
+
+                        <div className="relative">
+                            <textarea
+                                className="input-field peer min-h-[100px] pt-6"
+                                name="requirements"
+                                placeholder=" "
+                                value={form.requirements}
+                                onChange={handleChange}
+                                required
+                            />
+                            <label className="absolute left-3 top-2 text-xs text-primary transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-slate-400 peer-placeholder-shown:top-3 peer-focus:top-2 peer-focus:text-xs peer-focus:text-primary">
+                                Requirements
+                            </label>
+                        </div>
                     </div>
 
-                    <div>
-                        <label className="label">About Company (Short Bio)</label>
-                        <textarea
-                            className="input min-h-[80px]"
-                            name="about"
-                            placeholder="Brief description of your company..."
-                            value={form.about}
-                            onChange={handleChange}
-                            required
-                        />
-                    </div>
-
-                    <div>
-                        <label className="label">Job Description</label>
-                        <textarea
-                            className="input min-h-[150px]"
-                            name="description"
-                            placeholder="Detailed job responsibilities..."
-                            value={form.description}
-                            onChange={handleChange}
-                            required
-                        />
-                    </div>
-
-                    <div>
-                        <label className="label">Requirements</label>
-                        <textarea
-                            className="input min-h-[100px]"
-                            name="requirements"
-                            placeholder="Skills and qualifications needed..."
-                            value={form.requirements}
-                            onChange={handleChange}
-                            required
-                        />
-                    </div>
-
-                    <div className="flex justify-end gap-4 pt-4 border-t border-slate-100">
-                        <button
+                    <div className="flex justify-end gap-4 pt-6 border-t border-slate-100">
+                        <Button
                             type="button"
-                            className="btn btn-secondary"
+                            variant="ghost"
                             onClick={() => navigate("/recruiter")}
                         >
                             Cancel
-                        </button>
-                        <button
+                        </Button>
+                        <Button
                             type="submit"
-                            className="btn btn-primary"
-                            disabled={loading}
+                            variant="primary"
+                            isLoading={loading}
+                            className="px-8 shadow-lg shadow-primary/20"
                         >
-                            {loading ? "Posting..." : "Post Job"}
-                        </button>
+                            Post Job
+                        </Button>
                     </div>
                 </form>
-            </div>
+            </Card>
         </div>
     );
 }

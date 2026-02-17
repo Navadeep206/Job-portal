@@ -158,11 +158,12 @@ export const getRecruiterApplicants = async (req, res, next) => {
 /* Update Application Status */
 export const updateApplicationStatus = async (req, res, next) => {
   try {
-
     const { status } = req.body;
 
+    // Populate applicant to get email
     const application = await Application.findById(req.params.id)
-      .populate("job");
+      .populate("job")
+      .populate("applicant");
 
     if (!application) {
       res.status(404);
@@ -180,6 +181,22 @@ export const updateApplicationStatus = async (req, res, next) => {
 
     application.status = status;
     await application.save();
+
+    // Send email notification
+    try {
+      await sendEmail({
+        to: application.applicant.email,
+        subject: `Application Status Update: ${application.job.title}`,
+        text: `Your application for ${application.job.title} at ${application.job.company} has been ${status}.`,
+      });
+    } catch (emailError) {
+      console.error("Failed to send status update email:", emailError.message);
+    }
+
+    res.json({
+      success: true,
+      application,
+    });
 
   } catch (error) {
     next(error);

@@ -33,10 +33,10 @@ function Sidebar() {
 
                     {user.role === 'recruiter' && (
                         <>
-                            <Link to="/recruiter" className={`px-4 py-3 rounded-md transition-colors font-medium flex items-center gap-3 ${isActive("/recruiter")}`}>
+                            <Link to="/post-job" className={`px-4 py-3 rounded-md transition-colors font-medium flex items-center gap-3 ${isActive("/post-job")}`}>
                                 Post a Job
                             </Link>
-                            <Link to="/my-jobs" className={`px-4 py-3 rounded-md transition-colors font-medium flex items-center gap-3 ${isActive("/my-jobs")}`}>
+                            <Link to="/recruiter" className={`px-4 py-3 rounded-md transition-colors font-medium flex items-center gap-3 ${isActive("/recruiter")}`}>
                                 Manage Jobs
                             </Link>
                             <Link to="/applicants" className={`px-4 py-3 rounded-md transition-colors font-medium flex items-center gap-3 ${isActive("/applicants")}`}>

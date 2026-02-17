@@ -3,7 +3,9 @@ import { Link } from "react-router-dom";
 import API from "../../services/api";
 import BlurText from "../../components/animations/BlurText";
 import FadeIn from "../../components/animations/FadeIn";
-import HoverGlowCard from "../../components/animations/HoverGlowCard";
+import JobCard from "../../components/JobCard";
+import Button from "../../components/ui/Button";
+import Skeleton from "../../components/ui/Skeleton";
 
 function JobList() {
   const [jobs, setJobs] = useState([]);
@@ -106,52 +108,42 @@ function JobList() {
             <option value="Remote">Remote</option>
           </select>
           <div className="flex gap-2">
-            <button type="submit" className="btn btn-primary flex-1 shadow-md shadow-primary/20">Search</button>
-            <button type="button" onClick={clearFilters} className="btn btn-ghost px-3 text-slate-400 hover:text-slate-600" title="Clear Filters">
+            <Button type="submit" variant="primary" className="flex-1 shadow-md shadow-primary/20">Search</Button>
+            <Button type="button" onClick={clearFilters} variant="ghost" className="px-3 text-slate-400 hover:text-slate-600" title="Clear Filters">
               ✕
-            </button>
+            </Button>
           </div>
         </form>
       </FadeIn>
 
       {/* Results Section */}
       {loading ? (
-        <div className="text-center p-20">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-slate-500 animate-pulse">Searching for opportunities...</p>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {[...Array(6)].map((_, i) => (
+            <div key={i} className="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700/50">
+              <div className="flex justify-between items-start mb-4">
+                <Skeleton className="h-12 w-12 rounded-xl" />
+                <Skeleton className="h-6 w-20 rounded-full" />
+              </div>
+              <Skeleton className="h-6 w-3/4 mb-2 rounded" />
+              <Skeleton className="h-4 w-1/2 mb-4 rounded" />
+              <div className="flex gap-2 mb-6">
+                <Skeleton className="h-6 w-16 rounded-full" />
+                <Skeleton className="h-6 w-16 rounded-full" />
+              </div>
+              <div className="flex justify-between items-center pt-4 border-t border-slate-50 dark:border-slate-700/50">
+                <Skeleton className="h-4 w-24 rounded" />
+                <Skeleton className="h-8 w-24 rounded-lg" />
+              </div>
+            </div>
+          ))}
         </div>
       ) : (
         <>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {jobs.length > 0 ? jobs.map((job, index) => (
               <FadeIn key={job._id} delay={index * 0.05} direction="up">
-                <HoverGlowCard className="h-full bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden">
-                  <div className="p-6 h-full flex flex-col">
-                    <div className="flex justify-between items-start mb-4">
-                      <div className="bg-slate-50 p-2 rounded-lg">
-                        {/* Placeholder logo if we had one */}
-                        <div className="w-8 h-8 flex items-center justify-center text-lg">🏢</div>
-                      </div>
-                      {job.type && <span className="badge badge-info bg-indigo-50 text-primary border-0 font-medium px-3 py-1">{job.type}</span>}
-                    </div>
-
-                    <h4 className="text-xl font-bold text-slate-800 mb-1 group-hover:text-primary transition-colors line-clamp-1">{job.title}</h4>
-                    <p className="text-sm font-medium text-slate-500 mb-4">{job.company}</p>
-
-                    <div className="flex flex-wrap gap-2 mb-4">
-                      {job.location && <span className="text-xs font-medium text-slate-500 bg-slate-50 px-2.5 py-1 rounded-md border border-slate-100 flex items-center gap-1">📍 {job.location}</span>}
-                      {job.salary && <span className="text-xs font-medium text-slate-600 bg-green-50 px-2.5 py-1 rounded-md border border-green-100 flex items-center gap-1">💰 {job.salary}</span>}
-                    </div>
-
-                    <p className="text-sm text-slate-500 line-clamp-2 mb-6">
-                      {job.description}
-                    </p>
-
-                    <Link to={`/job/${job._id}`} className="mt-auto btn w-full bg-white text-primary border border-slate-200 hover:bg-primary hover:text-white hover:border-primary transition-all shadow-none">
-                      View Details
-                    </Link>
-                  </div>
-                </HoverGlowCard>
+                <JobCard job={job} />
               </FadeIn>
             )) : (
               <div className="col-span-full">
@@ -159,7 +151,7 @@ function JobList() {
                   <div className="text-6xl mb-4">🔍</div>
                   <h3 className="text-xl font-bold text-slate-800 mb-2">No jobs found</h3>
                   <p className="text-slate-500 mb-6">Try adjusting your search criteria</p>
-                  <button onClick={clearFilters} className="btn btn-outline">Clear Filters</button>
+                  <Button onClick={clearFilters} variant="outline">Clear Filters</Button>
                 </FadeIn>
               </div>
             )}
@@ -167,20 +159,20 @@ function JobList() {
 
           {pages > 1 && (
             <div className="flex justify-center items-center mt-12 gap-2">
-              <button
-                className="btn btn-ghost"
+              <Button
+                variant="ghost"
                 disabled={page === 1}
                 onClick={() => setPage(page - 1)}
-                style={{ opacity: page === 1 ? 0.3 : 1 }}
+                className={page === 1 ? "opacity-30" : ""}
               >
                 ← Prev
-              </button>
+              </Button>
 
               <div className="flex gap-1">
                 {[...Array(pages)].map((_, i) => (
                   <button
                     key={i}
-                    className={`w-10 h-10 rounded-lg text-sm font-medium transition-all ${page === i + 1 ? "bg-primary text-white shadow-lg shadow-primary/25" : "bg-white text-slate-600 hover:bg-slate-50"}`}
+                    className={`w-10 h-10 rounded-xl text-sm font-medium transition-all ${page === i + 1 ? "bg-primary text-white shadow-lg shadow-primary/25" : "bg-white text-slate-600 hover:bg-slate-50"}`}
                     onClick={() => setPage(i + 1)}
                   >
                     {i + 1}
@@ -188,14 +180,14 @@ function JobList() {
                 ))}
               </div>
 
-              <button
-                className="btn btn-ghost"
+              <Button
+                variant="ghost"
                 disabled={page === pages}
                 onClick={() => setPage(page + 1)}
-                style={{ opacity: page === pages ? 0.3 : 1 }}
+                className={page === pages ? "opacity-30" : ""}
               >
                 Next →
-              </button>
+              </Button>
             </div>
           )}
         </>

@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
+import crypto from 'crypto';
 
 const userSchema = new mongoose.Schema({
     name: {
@@ -13,6 +14,10 @@ const userSchema = new mongoose.Schema({
         lowercase: true,
         trim: true,
     },
+    avatar: {
+        type: String,
+        default: "https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg",
+    },
     password: {
         type: String,
         required: true,
@@ -22,6 +27,15 @@ const userSchema = new mongoose.Schema({
         enum: ['user', 'recruiter', 'admin'],
         required: true,
     },
+    resetPasswordToken: String,
+    resetPasswordExpire: Date,
+    savedJobs: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Job",
+        },
+    ],
+
 
 },
     {
@@ -39,13 +53,34 @@ userSchema.pre("save", async function () {
         return;
     }
 
-    const salt = await bcrypt.genSalt(10);
-    this.password = await bcrypt.hash(this.password, salt);
+    try {
+        const salt = await bcrypt.genSalt(10);
+        this.password = await bcrypt.hash(this.password, salt);
+    } catch (error) {
+        throw error;
+    }
 });
 
 /* Compare password */
 userSchema.methods.matchPassword = async function (enteredPassword) {
     return await bcrypt.compare(enteredPassword, this.password);
+};
+
+/* Generate Reset Token */
+userSchema.methods.getResetPasswordToken = function () {
+    // Generate token
+    const resetToken = crypto.randomBytes(20).toString('hex');
+
+    // Hash token and set to resetPasswordToken field
+    this.resetPasswordToken = crypto
+        .createHash('sha256')
+        .update(resetToken)
+        .digest('hex');
+
+    // Set expire (10 minutes)
+    this.resetPasswordExpire = Date.now() + 10 * 60 * 1000;
+
+    return resetToken;
 };
 
 const User = mongoose.model("User", userSchema);

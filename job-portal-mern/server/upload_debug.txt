@@ -1,0 +1,38 @@
+[2026-02-13T10:54:53.209Z] Processing file: uploads/avatar-1770980093154.png
+[2026-02-13T10:54:53.214Z] ERROR: Must supply api_key
+{}
+[2026-02-13T11:01:20.132Z] Processing file: uploads/avatar-1770980480087.png
+[2026-02-13T11:01:20.136Z] ERROR: Must supply api_key
+{}
+[2026-02-13T11:04:40.125Z] CONFIG: Cloud Name: df7xi2o5m
+[2026-02-13T11:04:40.132Z] CONFIG: API Key present: true
+[2026-02-13T11:04:40.132Z] CONFIG: Cloudinary Configured
+[2026-02-17T06:53:14.096Z] CONFIG: Cloud Name: df7xi2o5m
+[2026-02-17T06:53:14.104Z] CONFIG: API Key present: true
+[2026-02-17T06:53:14.104Z] CONFIG: Cloudinary Configured
+[2026-02-17T06:55:14.647Z] CONFIG: Cloud Name: df7xi2o5m
+[2026-02-17T06:55:14.649Z] CONFIG: API Key present: true
+[2026-02-17T06:55:14.649Z] CONFIG: Cloudinary Configured
+[2026-02-17T06:57:43.032Z] CONFIG: Cloud Name: df7xi2o5m
+[2026-02-17T06:57:43.037Z] CONFIG: API Key present: true
+[2026-02-17T06:57:43.038Z] CONFIG: Cloudinary Configured
+[2026-02-17T06:58:58.249Z] Processing file: uploads/avatar-1771311538184.png
+[2026-02-17T06:59:01.417Z] Cloudinary success: https://res.cloudinary.com/df7xi2o5m/image/upload/v1771311540/avatars/udvjxw4ld0nyck8ygcph.png
+[2026-02-17T07:04:07.568Z] CONFIG: Cloud Name: df7xi2o5m
+[2026-02-17T07:04:07.574Z] CONFIG: API Key present: true
+[2026-02-17T07:04:07.575Z] CONFIG: Cloudinary Configured
+[2026-02-17T07:04:18.247Z] CONFIG: Cloud Name: df7xi2o5m
+[2026-02-17T07:04:18.248Z] CONFIG: API Key present: true
+[2026-02-17T07:04:18.248Z] CONFIG: Cloudinary Configured
+[2026-02-17T07:04:44.402Z] CONFIG: Cloud Name: df7xi2o5m
+[2026-02-17T07:04:44.403Z] CONFIG: API Key present: true
+[2026-02-17T07:04:44.404Z] CONFIG: Cloudinary Configured
+[2026-02-17T07:04:46.554Z] CONFIG: Cloud Name: df7xi2o5m
+[2026-02-17T07:04:46.555Z] CONFIG: API Key present: true
+[2026-02-17T07:04:46.556Z] CONFIG: Cloudinary Configured
+[2026-02-17T07:05:13.580Z] CONFIG: Cloud Name: df7xi2o5m
+[2026-02-17T07:05:13.583Z] CONFIG: API Key present: true
+[2026-02-17T07:05:13.583Z] CONFIG: Cloudinary Configured
+[2026-02-17T07:05:41.034Z] CONFIG: Cloud Name: df7xi2o5m
+[2026-02-17T07:05:41.036Z] CONFIG: API Key present: true
+[2026-02-17T07:05:41.036Z] CONFIG: Cloudinary Configured
