@@ -1,9 +1,11 @@
 import { createContext, useState, useEffect, useContext } from 'react';
-import axios from 'axios';
+import API from '../services/api';
 import { AuthContext } from './AuthContext';
 
 
 export const JobContext = createContext();
+
+export const useJob = () => useContext(JobContext);
 
 export const JobProvider = ({ children }) => {
     const { user } = useContext(AuthContext);
@@ -24,18 +26,8 @@ export const JobProvider = ({ children }) => {
         if (!user) return;
         setLoading(true);
         try {
-            // Using the API instance would be better, but I'll use axios directly here for clarity if I don't import API.
-            // Let's assume I can import API.
-            // But to be safe and avoid relative path guessing errors without seeing directory structure perfectly again (though I saw it), 
-            // I'll use standard axios with the user token.
-
-            const token = user.token;
-            const config = {
-                headers: { Authorization: `Bearer ${token}` }
-            };
-
-            // Assuming the base URL is http://localhost:5005/api
-            const { data } = await axios.get('http://localhost:5005/api/users/saved-jobs', config);
+            // Using the API instance handles token and base URL automatically
+            const { data } = await API.get('/users/saved-jobs');
             if (data.success) {
                 setSavedJobs(data.savedJobs);
             }
@@ -52,11 +44,7 @@ export const JobProvider = ({ children }) => {
             return;
         }
         try {
-            const token = user.token;
-            const config = {
-                headers: { Authorization: `Bearer ${token}` }
-            };
-            const { data } = await axios.put('http://localhost:5005/api/users/saved-jobs', { jobId }, config);
+            const { data } = await API.put('/users/saved-jobs', { jobId });
 
             if (data.success) {
                 // Update local state based on response or re-fetch

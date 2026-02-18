@@ -37,7 +37,7 @@ function Applicants() {
 
     if (loading) return <div className="text-center p-10">Loading applicants...</div>;
 
-    const API_BASE = "http://localhost:5005"; // Hardcoded for file serve, or use env
+    const API_BASE = (import.meta.env.VITE_API_BASE_URL || "http://localhost:5005/api").replace('/api', '');
 
     return (
         <div className="fade-in space-y-6">

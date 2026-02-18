@@ -26,7 +26,19 @@ const userSchema = new mongoose.Schema({
         type: String,
         enum: ['user', 'recruiter', 'admin'],
         required: true,
+        default: "user"
     },
+    title: { type: String },
+    bio: { type: String },
+    location: { type: String },
+    skills: [{ type: String }],
+    resume: { type: String }, // URL to resume file
+    experience: [{
+        title: String,
+        company: String,
+        period: String,
+        description: String
+    }],
     resetPasswordToken: String,
     resetPasswordExpire: Date,
     savedJobs: [

@@ -1,7 +1,8 @@
 import Application from "../models/Application.js";
 import Job from "../models/Job.js";
 import sendEmail from "../config/email.js";
-
+import { v2 as cloudinary } from 'cloudinary';
+import fs from 'fs';
 
 /* Apply for Job */
 export const applyJob = async (req, res, next) => {
@@ -11,12 +12,26 @@ export const applyJob = async (req, res, next) => {
     // Check if file was uploaded
     let resume = "";
     if (req.file) {
-      resume = `/${req.file.path}`; // Store relative path
+      try {
+        // Upload to Cloudinary
+        const result = await cloudinary.uploader.upload(req.file.path, {
+          folder: "resumes",
+          resource_type: "auto", // Handle PDF/Docs
+        });
+        resume = result.secure_url;
+
+        // Clean up local file
+        fs.unlink(req.file.path, (err) => {
+          if (err) console.error("Failed to delete local resume file:", err);
+        });
+      } catch (uploadError) {
+        console.error("Resume upload failed:", uploadError);
+        res.status(500);
+        throw new Error("Failed to upload resume");
+      }
     } else if (req.body.resume) {
       resume = req.body.resume; // Fallback for old tests/links
     }
-
-
 
     if (!jobId || !resume) {
       res.status(400);

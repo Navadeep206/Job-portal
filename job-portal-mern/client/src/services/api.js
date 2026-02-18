@@ -1,11 +1,13 @@
 import axios from "axios";
 
+const baseURL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5005/api";
+
 const API = axios.create({
-  baseURL: "http://localhost:5005/api", // Hardcoded for debugging
+  baseURL,
 });
 
 console.log("API Service Initialized");
-console.log("Target Base URL:", "http://localhost:5005/api");
+console.log("Target Base URL:", baseURL);
 
 /* Attach Token */
 API.interceptors.request.use((req) => {

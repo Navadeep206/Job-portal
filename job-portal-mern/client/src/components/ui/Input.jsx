@@ -28,6 +28,23 @@ const Input = React.forwardRef(({
         if (props.onChange) props.onChange(e);
     };
 
+    if (type === 'textarea') {
+        return (
+            <div className={`space-y-2 ${className}`}>
+                {label && <label htmlFor={props.id} className="text-sm font-medium text-slate-700">{label}</label>}
+                <textarea
+                    ref={ref}
+                    className={`flex min-h-[80px] w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm ring-offset-white placeholder:text-slate-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition-all duration-200`}
+                    onFocus={handleFocus}
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    {...props}
+                />
+                {error && <p className="text-sm text-red-500">{error}</p>}
+            </div>
+        )
+    }
+
     return (
         <div className="relative mb-4">
             <div className="relative">

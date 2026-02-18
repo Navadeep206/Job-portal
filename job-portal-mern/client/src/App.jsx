@@ -22,6 +22,9 @@ import Applicants from "./pages/dashboard/Applicants";
 import PostJob from "./pages/dashboard/PostJob";
 import EditJob from "./pages/dashboard/EditJob";
 import Profile from "./pages/dashboard/Profile";
+import SavedJobs from "./pages/SavedJobs";
+import JobAlerts from "./pages/JobAlerts";
+
 
 import Navbar from "./components/common/Navbar";
 
@@ -50,7 +53,24 @@ function App() {
             <Route path="/register" element={<Register />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/reset-password/:token" element={<ResetPassword />} />
+            <Route
+              path="/saved-jobs"
+              element={
+                <ProtectedRoute roles={["user"]}>
+                  <SavedJobs />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/job-alerts"
+              element={
+                <ProtectedRoute roles={["user"]}>
+                  <JobAlerts />
+                </ProtectedRoute>
+              }
+            />
           </Route>
+
 
           {/* Dashboard Routes with Sidebar */}
           <Route element={

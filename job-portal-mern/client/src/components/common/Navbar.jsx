@@ -84,11 +84,23 @@ function Navbar() {
                             <>
                                 <AnimatePresence>
                                     {user.role === 'user' && (
-                                        <motion.div initial="hidden" animate="visible" custom={1} variants={navItemVariants}>
-                                            <Link to="/user" className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${isActive("/user")}`}>
-                                                Dashboard
-                                            </Link>
-                                        </motion.div>
+                                        <>
+                                            <motion.div initial="hidden" animate="visible" custom={1} variants={navItemVariants}>
+                                                <Link to="/user" className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${isActive("/user")}`}>
+                                                    Dashboard
+                                                </Link>
+                                            </motion.div>
+                                            <motion.div initial="hidden" animate="visible" custom={2} variants={navItemVariants}>
+                                                <Link to="/saved-jobs" className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${isActive("/saved-jobs")}`}>
+                                                    Saved Jobs
+                                                </Link>
+                                            </motion.div>
+                                            <motion.div initial="hidden" animate="visible" custom={3} variants={navItemVariants}>
+                                                <Link to="/job-alerts" className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${isActive("/job-alerts")}`}>
+                                                    Job Alerts
+                                                </Link>
+                                            </motion.div>
+                                        </>
                                     )}
                                     {user.role === 'recruiter' && (
                                         <>
@@ -179,9 +191,17 @@ function Navbar() {
                             {user ? (
                                 <>
                                     {user.role === 'user' && (
-                                        <Link to="/user" className={`block px-4 py-3 rounded-xl text-base font-medium ${isActive("/user")}`} onClick={() => setIsMenuOpen(false)}>
-                                            Dashboard
-                                        </Link>
+                                        <>
+                                            <Link to="/user" className={`block px-4 py-3 rounded-xl text-base font-medium ${isActive("/user")}`} onClick={() => setIsMenuOpen(false)}>
+                                                Dashboard
+                                            </Link>
+                                            <Link to="/saved-jobs" className={`block px-4 py-3 rounded-xl text-base font-medium ${isActive("/saved-jobs")}`} onClick={() => setIsMenuOpen(false)}>
+                                                Saved Jobs
+                                            </Link>
+                                            <Link to="/job-alerts" className={`block px-4 py-3 rounded-xl text-base font-medium ${isActive("/job-alerts")}`} onClick={() => setIsMenuOpen(false)}>
+                                                Job Alerts
+                                            </Link>
+                                        </>
                                     )}
                                     {user.role === 'recruiter' && (
                                         <>
