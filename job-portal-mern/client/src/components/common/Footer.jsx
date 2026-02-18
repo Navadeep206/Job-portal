@@ -8,7 +8,7 @@ function Footer() {
                     {/* Brand */}
                     <div className="md:col-span-1">
                         <Link to="/" className="text-xl font-bold text-primary mb-4 block">
-                            JobPortal
+                            JobSphere
                         </Link>
                         <p className="text-slate-500 text-sm">
                             Connecting talented professionals with the best companies. Find your dream job today.
@@ -47,7 +47,7 @@ function Footer() {
                 </div>
 
                 <div className="border-t border-slate-100 mt-8 pt-8 text-center text-sm text-slate-500">
-                    <p>© {new Date().getFullYear()} JobPortal. All rights reserved.</p>
+                    <p>© {new Date().getFullYear()} JobSphere. All rights reserved.</p>
                 </div>
             </div>
         </footer>
