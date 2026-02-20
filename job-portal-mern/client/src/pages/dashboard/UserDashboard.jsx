@@ -3,6 +3,7 @@ import API from "../../services/api";
 import { Link } from "react-router-dom";
 import Card from "../../components/ui/Card";
 import Button from "../../components/ui/Button";
+import { FolderOpen } from 'lucide-react';
 
 function UserDashboard() {
   const [apps, setApps] = useState([]);
@@ -45,7 +46,7 @@ function UserDashboard() {
         <div className="grid grid-cols-1 gap-4">
           {apps.length === 0 ? (
             <Card className="text-center py-12 bg-slate-50 border-dashed">
-              <div className="text-4xl mb-4">📂</div>
+              <div className="mb-4 text-slate-300 dark:text-slate-600 inline-block p-4 rounded-full bg-slate-100 dark:bg-slate-800"><FolderOpen size={48} /></div>
               <p className="text-slate-500 mb-6 font-medium">You haven't applied to any jobs yet.</p>
               <Link to="/">
                 <Button variant="primary">Browse Jobs</Button>

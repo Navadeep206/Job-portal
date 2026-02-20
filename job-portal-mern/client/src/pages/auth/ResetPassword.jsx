@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import API from "../../services/api";
+import { CheckCircle } from 'lucide-react';
+
 
 function ResetPassword() {
     const { token } = useParams();
@@ -38,9 +40,13 @@ function ResetPassword() {
     if (success) {
         return (
             <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
+
+
+                // ...
+
                 <div className="card max-w-md w-full p-8 bg-white shadow-xl rounded-2xl fade-in text-center">
                     <div className="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">
-                        ✓
+                        <CheckCircle size={32} />
                     </div>
                     <h2 className="text-2xl font-bold text-slate-800 mb-2">Password Reset Successful!</h2>
                     <p className="text-slate-500 mb-6">You can now login with your new password.</p>

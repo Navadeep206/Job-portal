@@ -3,6 +3,7 @@ import API from "../../services/api";
 import { Link } from "react-router-dom";
 import Card from "../../components/ui/Card";
 import Button from "../../components/ui/Button";
+import { Users, FileText, MousePointerClick } from 'lucide-react';
 
 function RecruiterDashboard() {
   const [jobs, setJobs] = useState([]);
@@ -128,7 +129,7 @@ function RecruiterDashboard() {
 
             {apps.length === 0 ? (
               <div className="flex-1 flex flex-col items-center justify-center text-slate-400">
-                <div className="text-5xl mb-4">👥</div>
+                <div className="mb-4"><Users size={48} /></div>
                 <p>No applicants yet for this job.</p>
               </div>
             ) : (
@@ -144,7 +145,7 @@ function RecruiterDashboard() {
                         </span>
                         {app.resume && (
                           <a href={app.resume} target="_blank" rel="noreferrer" className="text-primary hover:underline flex items-center gap-1">
-                            📄 View Resume
+                            <FileText size={14} /> View Resume
                           </a>
                         )}
                       </div>
@@ -170,8 +171,8 @@ function RecruiterDashboard() {
                         </>
                       ) : (
                         <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider border ${app.status === 'accepted' ? 'bg-emerald-100 text-emerald-800 border-emerald-200' :
-                            app.status === 'rejected' ? 'bg-red-100 text-red-800 border-red-200' :
-                              'bg-gray-100 text-gray-800 border-gray-200'
+                          app.status === 'rejected' ? 'bg-red-100 text-red-800 border-red-200' :
+                            'bg-gray-100 text-gray-800 border-gray-200'
                           }`}>
                           {app.status}
                         </span>
@@ -184,8 +185,8 @@ function RecruiterDashboard() {
           </Card>
         ) : (
           <Card className="flex items-center justify-center p-10 h-full min-h-[400px] text-slate-400 bg-slate-50/50 border-dashed">
-            <div className="text-center">
-              <div className="text-6xl mb-4 opacity-50">👈</div>
+            <div className="text-center flex flex-col items-center">
+              <div className="mb-4 opacity-50"><MousePointerClick size={64} /></div>
               <p className="text-lg font-medium">Select a job from the list</p>
               <p className="text-sm">to view and manage applicants</p>
             </div>

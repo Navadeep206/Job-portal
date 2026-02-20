@@ -4,6 +4,9 @@ import API from "../../services/api";
 import Input from "../../components/ui/Input";
 import Button from "../../components/ui/Button";
 import Card from "../../components/ui/Card";
+import Select from "../../components/ui/Select";
+import { AlertTriangle } from 'lucide-react';
+
 
 function PostJob() {
     const [form, setForm] = useState({
@@ -40,17 +43,38 @@ function PostJob() {
         }
     };
 
+    const jobTypes = [
+        { value: "Full-time", label: "Full-time" },
+        { value: "Part-time", label: "Part-time" },
+        { value: "Contract", label: "Contract" },
+        { value: "Internship", label: "Internship" },
+        { value: "Remote", label: "Remote" },
+    ];
+
+    const experienceLevels = [
+        { value: "Entry Level", label: "Entry Level" },
+        { value: "Mid Level", label: "Mid Level" },
+        { value: "Senior Level", label: "Senior Level" },
+        { value: "Director", label: "Director" },
+        { value: "Executive", label: "Executive" },
+    ];
+
     return (
-        <div className="max-w-4xl mx-auto fade-in py-10">
-            <Card className="p-8">
-                <div className="mb-8 border-b border-slate-100 pb-4">
-                    <h2 className="text-2xl font-bold text-slate-800">Post a New Job</h2>
-                    <p className="text-slate-500 mt-1">Fill in the details to find your next great hire.</p>
+        <div className="max-w-4xl mx-auto fade-in py-10 px-4">
+            <Card className="p-8 border-slate-200 shadow-lg dark:border-slate-700">
+                <div className="mb-8 border-b border-slate-100 dark:border-slate-700 pb-4">
+                    <h2 className="text-3xl font-bold font-display text-slate-900 dark:text-white">Post a New Job</h2>
+                    <p className="text-slate-500 dark:text-slate-400 mt-2">Fill in the details to find your next great hire.</p>
                 </div>
 
+
+
+                // ...
+
                 {error && (
-                    <div className="bg-red-50 border border-red-100 text-red-600 p-4 rounded-xl mb-6 flex items-center gap-2">
-                        <span>⚠️</span> {error}
+                    <div className="bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-800 text-red-600 dark:text-red-400 p-4 rounded-xl mb-8 flex items-center gap-3">
+                        <AlertTriangle size={20} />
+                        <span className="font-medium">{error}</span>
                     </div>
                 )}
 
@@ -84,43 +108,23 @@ function PostJob() {
                             required
                         />
 
-                        <div className="relative mb-4">
-                            <select
-                                className="input-field peer"
-                                name="type"
-                                value={form.type}
-                                onChange={handleChange}
-                            >
-                                <option value="Full-time">Full-time</option>
-                                <option value="Part-time">Part-time</option>
-                                <option value="Contract">Contract</option>
-                                <option value="Internship">Internship</option>
-                                <option value="Remote">Remote</option>
-                            </select>
-                            <label className="absolute left-3 top-0 text-xs text-primary transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-slate-400 peer-placeholder-shown:top-3 peer-focus:top-0 peer-focus:text-xs peer-focus:text-primary">
-                                Job Type
-                            </label>
-                        </div>
+                        <Select
+                            label="Job Type"
+                            name="type"
+                            value={form.type}
+                            onChange={handleChange}
+                            options={jobTypes}
+                        />
 
-                        <div className="relative mb-4">
-                            <select
-                                className="input-field peer"
-                                name="experience"
-                                value={form.experience}
-                                onChange={handleChange}
-                                required
-                            >
-                                <option value="" disabled>Select Level</option>
-                                <option value="Entry Level">Entry Level</option>
-                                <option value="Mid Level">Mid Level</option>
-                                <option value="Senior Level">Senior Level</option>
-                                <option value="Director">Director</option>
-                                <option value="Executive">Executive</option>
-                            </select>
-                            <label className="absolute left-3 top-0 text-xs text-primary transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-slate-400 peer-placeholder-shown:top-3 peer-focus:top-0 peer-focus:text-xs peer-focus:text-primary">
-                                Experience Level
-                            </label>
-                        </div>
+                        <Select
+                            label="Experience Level"
+                            name="experience"
+                            value={form.experience}
+                            onChange={handleChange}
+                            required
+                            placeholder="Select Level"
+                            options={experienceLevels}
+                        />
                     </div>
 
                     <Input
@@ -131,55 +135,44 @@ function PostJob() {
                         onChange={handleChange}
                     />
 
-                    <div className="space-y-4">
-                        <div className="relative">
-                            <textarea
-                                className="input-field peer min-h-[100px] pt-6"
-                                name="about"
-                                placeholder=" "
-                                value={form.about}
-                                onChange={handleChange}
-                                required
-                            />
-                            <label className="absolute left-3 top-2 text-xs text-primary transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-slate-400 peer-placeholder-shown:top-3 peer-focus:top-2 peer-focus:text-xs peer-focus:text-primary">
-                                About Company (Short Bio)
-                            </label>
-                        </div>
+                    <div className="space-y-6">
+                        <Input
+                            type="textarea"
+                            label="About Company (Short Bio)"
+                            name="about"
+                            value={form.about}
+                            onChange={handleChange}
+                            required
+                            className="min-h-[100px]"
+                        />
 
-                        <div className="relative">
-                            <textarea
-                                className="input-field peer min-h-[150px] pt-6"
-                                name="description"
-                                placeholder=" "
-                                value={form.description}
-                                onChange={handleChange}
-                                required
-                            />
-                            <label className="absolute left-3 top-2 text-xs text-primary transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-slate-400 peer-placeholder-shown:top-3 peer-focus:top-2 peer-focus:text-xs peer-focus:text-primary">
-                                Job Description
-                            </label>
-                        </div>
+                        <Input
+                            type="textarea"
+                            label="Job Description"
+                            name="description"
+                            value={form.description}
+                            onChange={handleChange}
+                            required
+                            className="min-h-[150px]"
+                        />
 
-                        <div className="relative">
-                            <textarea
-                                className="input-field peer min-h-[100px] pt-6"
-                                name="requirements"
-                                placeholder=" "
-                                value={form.requirements}
-                                onChange={handleChange}
-                                required
-                            />
-                            <label className="absolute left-3 top-2 text-xs text-primary transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-slate-400 peer-placeholder-shown:top-3 peer-focus:top-2 peer-focus:text-xs peer-focus:text-primary">
-                                Requirements
-                            </label>
-                        </div>
+                        <Input
+                            type="textarea"
+                            label="Requirements"
+                            name="requirements"
+                            value={form.requirements}
+                            onChange={handleChange}
+                            required
+                            className="min-h-[100px]"
+                        />
                     </div>
 
-                    <div className="flex justify-end gap-4 pt-6 border-t border-slate-100">
+                    <div className="flex justify-end gap-4 pt-8 border-t border-slate-100 dark:border-slate-700">
                         <Button
                             type="button"
                             variant="ghost"
                             onClick={() => navigate("/recruiter")}
+                            className="hover:bg-slate-100 dark:hover:bg-slate-800"
                         >
                             Cancel
                         </Button>
@@ -187,7 +180,7 @@ function PostJob() {
                             type="submit"
                             variant="primary"
                             isLoading={loading}
-                            className="px-8 shadow-lg shadow-primary/20"
+                            className="px-8 shadow-xl shadow-primary/20 hover:shadow-primary/30"
                         >
                             Post Job
                         </Button>

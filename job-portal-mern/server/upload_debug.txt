@@ -1,6 +1,0 @@
-[2026-02-18T04:00:55.214Z] CONFIG: Cloud Name: df7xi2o5m
-[2026-02-18T04:00:55.216Z] CONFIG: API Key present: true
-[2026-02-18T04:00:55.217Z] CONFIG: Cloudinary Configured
-[2026-02-18T04:13:06.838Z] CONFIG: Cloud Name: df7xi2o5m
-[2026-02-18T04:13:06.841Z] CONFIG: API Key present: true
-[2026-02-18T04:13:06.842Z] CONFIG: Cloudinary Configured

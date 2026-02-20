@@ -12,48 +12,84 @@ export default {
                 display: ['Outfit', 'Inter', 'system-ui', 'sans-serif'],
             },
             colors: {
+                // Modern Slate Palette
+                slate: {
+                    50: '#f8fafc',
+                    100: '#f1f5f9',
+                    200: '#e2e8f0',
+                    300: '#cbd5e1',
+                    400: '#94a3b8',
+                    500: '#64748b',
+                    600: '#475569',
+                    700: '#334155',
+                    800: '#1e293b',
+                    900: '#0f172a',
+                    950: '#020617',
+                },
+                // Semantic Colors
                 primary: {
-                    DEFAULT: '#4f46e5', // Indigo 600
-                    hover: '#4338ca',   // Indigo 700
-                    light: '#818cf8',   // Indigo 400
+                    DEFAULT: '#6366f1', // Indigo 500
+                    hover: '#4f46e5',   // Indigo 600
+                    light: '#a5b4fc',   // Indigo 300
+                    50: '#eef2ff',
+                    100: '#e0e7ff',
+                    200: '#c7d2fe',
+                    300: '#a5b4fc',
+                    400: '#818cf8',
+                    500: '#6366f1',
+                    600: '#4f46e5',
+                    700: '#4338ca',
+                    800: '#3730a3',
+                    900: '#312e81',
+                    950: '#1e1b4b',
                 },
                 secondary: {
-                    DEFAULT: '#0d9488', // Teal 600
-                    hover: '#0f766e',   // Teal 700
-                    light: '#2dd4bf',   // Teal 400
+                    DEFAULT: '#14b8a6', // Teal 500
+                    hover: '#0d9488',   // Teal 600
+                    light: '#5eead4',   // Teal 300
                 },
-                dark: {
-                    900: '#0f172a', // Slate 900
-                    800: '#1e293b', // Slate 800
-                    700: '#334155', // Slate 700
+                background: {
+                    light: '#f8fafc', // Slate 50
+                    dark: '#020617',  // Slate 950
                 },
-                light: {
-                    50: '#f8fafc',  // Slate 50
-                    100: '#f1f5f9', // Slate 100
-                    200: '#e2e8f0', // Slate 200
-                    300: '#cbd5e1', // Slate 300
-                },
-                background: '#f8fafc', // Slate 50
-                surface: '#ffffff',
-                text: {
-                    main: '#0f172a', // Slate 900
-                    muted: '#64748b', // Slate 500
+                surface: {
+                    light: '#ffffff',
+                    dark: '#0f172a',  // Slate 900
                 },
                 success: '#10b981', // Emerald 500
                 error: '#ef4444',   // Red 500
                 warning: '#f59e0b', // Amber 500
             },
             backgroundImage: {
-                'gradient-primary': 'linear-gradient(to right, #4f46e5, #818cf8)',
-                'gradient-secondary': 'linear-gradient(to right, #0d9488, #2dd4bf)',
-                'gradient-dark': 'linear-gradient(to right, #0f172a, #1e293b)',
+                'gradient-primary': 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)',
+                'gradient-secondary': 'linear-gradient(135deg, #14b8a6 0%, #0ea5e9 100%)',
+                'gradient-dark': 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)',
+                'gradient-glow': 'radial-gradient(circle at center, rgba(99, 102, 241, 0.15) 0%, rgba(0, 0, 0, 0) 70%)',
             },
             boxShadow: {
                 'glass': '0 8px 32px 0 rgba(31, 38, 135, 0.07)',
+                'glass-sm': '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+                'neon': '0 0 10px rgba(99, 102, 241, 0.5), 0 0 20px rgba(99, 102, 241, 0.3)',
             },
             borderRadius: {
                 'xl': '1rem',
                 '2xl': '1.5rem',
+                '3xl': '2rem',
+            },
+            animation: {
+                'fade-in': 'fadeIn 0.5s ease-out',
+                'slide-up': 'slideUp 0.5s ease-out',
+                'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+            },
+            keyframes: {
+                fadeIn: {
+                    '0%': { opacity: '0' },
+                    '100%': { opacity: '1' },
+                },
+                slideUp: {
+                    '0%': { transform: 'translateY(20px)', opacity: '0' },
+                    '100%': { transform: 'translateY(0)', opacity: '1' },
+                },
             },
         },
     },

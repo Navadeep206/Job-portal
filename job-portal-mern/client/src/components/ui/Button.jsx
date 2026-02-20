@@ -10,20 +10,20 @@ const Button = React.forwardRef(({
     children,
     ...props
 }, ref) => {
-    const baseStyles = 'inline-flex items-center justify-center font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed';
+    const baseStyles = 'inline-flex items-center justify-center font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary/50 dark:focus:ring-offset-slate-900 disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.98]';
 
     const variants = {
-        primary: 'bg-gradient-to-r from-indigo-600 to-indigo-500 text-white hover:shadow-lg border border-transparent',
-        secondary: 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 hover:text-gray-900',
-        outline: 'bg-transparent border-2 border-indigo-600 text-indigo-600 hover:bg-indigo-50',
-        ghost: 'bg-transparent text-gray-600 hover:bg-gray-100 hover:text-gray-900',
-        danger: 'bg-red-600 text-white hover:bg-red-700',
+        primary: 'bg-primary text-white hover:bg-primary-hover shadow-lg shadow-primary/25 hover:shadow-primary/40 border border-transparent',
+        secondary: 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-50 hover:border-slate-300 dark:bg-slate-800 dark:text-slate-200 dark:border-slate-700 dark:hover:bg-slate-700',
+        outline: 'bg-transparent border border-primary text-primary hover:bg-primary/5 dark:hover:bg-primary/10',
+        ghost: 'bg-transparent text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-100',
+        danger: 'bg-red-500 text-white hover:bg-red-600 shadow-lg shadow-red-500/25 border border-transparent',
     };
 
     const sizes = {
         sm: 'text-xs px-3 py-1.5 rounded-lg',
-        md: 'text-sm px-4 py-2 rounded-xl',
-        lg: 'text-base px-6 py-3 rounded-2xl',
+        md: 'text-sm px-5 py-2.5 rounded-xl',
+        lg: 'text-base px-6 py-3.5 rounded-2xl',
     };
 
     return (

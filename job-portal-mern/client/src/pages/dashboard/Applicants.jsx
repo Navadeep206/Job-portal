@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import API from "../../services/api";
+import { FileText } from 'lucide-react';
 
 function Applicants() {
     const [applicants, setApplicants] = useState([]);
@@ -92,9 +93,9 @@ function Applicants() {
                                         href={app.resume.startsWith("http") ? app.resume : `${API_BASE}${app.resume}`}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="btn btn-primary flex-1 text-center py-2 text-sm"
+                                        className="btn btn-primary flex-1 text-center py-2 text-sm flex items-center justify-center gap-2"
                                     >
-                                        📄 View Resume
+                                        <FileText size={16} /> View Resume
                                     </a>
                                 ) : (
                                     <span className="btn btn-secondary flex-1 text-center py-2 text-sm disabled cursor-not-allowed opacity-50">No Resume</span>

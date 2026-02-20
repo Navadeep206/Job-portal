@@ -12,8 +12,10 @@ const Card = ({
     const baseStyles = "rounded-2xl p-6 border transition-all duration-300";
 
     const variants = {
-        default: "bg-white border-slate-100 shadow-sm",
+        default: "bg-white border-slate-100 shadow-sm dark:bg-slate-800 dark:border-slate-700/50",
         glass: "glass",
+        outline: "bg-transparent border border-slate-200 dark:border-slate-700",
+        gradient: "bg-gradient-to-br from-white to-slate-50 border-slate-100 dark:from-slate-800 dark:to-slate-900 dark:border-slate-700",
     };
 
     return (

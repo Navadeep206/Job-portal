@@ -37,7 +37,7 @@ function Navbar() {
             initial={{ y: -100 }}
             animate={{ y: 0 }}
             transition={{ type: "spring", stiffness: 100, damping: 20 }}
-            className="sticky top-0 z-50 w-full glass dark:bg-slate-900/80 dark:border-slate-800 border-b border-slate-200/50"
+            className="sticky top-0 z-50 w-full glass border-b border-slate-200/50 dark:border-slate-800/50"
         >
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between items-center h-16">

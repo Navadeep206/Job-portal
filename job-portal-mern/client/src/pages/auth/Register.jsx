@@ -5,9 +5,10 @@ import { useAuth } from "../../hooks/useAuth";
 import Input from "../../components/ui/Input";
 import Button from "../../components/ui/Button";
 import Card from "../../components/ui/Card";
+import Select from "../../components/ui/Select";
 import FadeIn from "../../components/animations/FadeIn";
+import { AlertTriangle } from 'lucide-react';
 
-// Enhanced Register.jsx with accessibility and debug logging
 function Register() {
   const [form, setForm] = useState({
     name: "",
@@ -28,11 +29,9 @@ function Register() {
     e.preventDefault();
     setError("");
     setLoading(true);
-    console.log("DEBUG REGISTER: Form State:", form);
 
     try {
       const res = await API.post("/auth/register", form);
-      console.log("REGISTER: Success", res.data);
       login(res.data);
       navigate("/");
     } catch (err) {
@@ -47,22 +46,27 @@ function Register() {
     }
   };
 
+  const roleOptions = [
+    { value: "user", label: "Job Seeker" },
+    { value: "recruiter", label: "Recruiter" },
+  ];
+
   return (
-    <div className="flex items-center justify-center min-h-[80vh] px-4">
+    <div className="flex items-center justify-center min-h-[80vh] px-4 py-10">
       <FadeIn delay={0.1}>
-        <Card className="w-full max-w-lg p-8 shadow-xl border-slate-100">
+        <Card className="w-full max-w-lg p-8 shadow-2xl border-slate-100 dark:border-slate-700">
           <div className="text-center mb-8">
-            <h2 className="text-3xl font-bold text-slate-900 mb-2">Create an Account</h2>
-            <p className="text-slate-500">Join us to find your dream job</p>
+            <h2 className="text-3xl font-bold font-display text-slate-900 dark:text-white mb-2">Create an Account</h2>
+            <p className="text-slate-500 dark:text-slate-400">Join us to find your dream job</p>
           </div>
 
           {error && (
-            <div className="bg-red-50 text-error text-sm p-3 rounded-xl mb-6 text-center border border-red-100">
-              {error}
+            <div className="bg-red-50 dark:bg-red-900/20 text-error dark:text-red-400 text-sm p-4 rounded-xl mb-6 text-center border border-red-100 dark:border-red-800 flex items-center justify-center gap-2">
+              <AlertTriangle size={18} /> {error}
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-5">
             <Input
               label="Full Name"
               name="name"
@@ -92,38 +96,25 @@ function Register() {
               required
             />
 
-            <div className="relative mb-4">
-              <label className="block text-sm font-medium text-slate-700 mb-1 ml-1" htmlFor="role">
-                I am a...
-              </label>
-              <select
-                id="role"
-                className="input-field appearance-none cursor-pointer"
-                name="role"
-                value={form.role}
-                onChange={handleChange}
-              >
-                <option value="user">Job Seeker</option>
-                <option value="recruiter">Recruiter</option>
-              </select>
-              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 pt-6 text-slate-500">
-                <svg className="h-4 w-4 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                  <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
-                </svg>
-              </div>
-            </div>
+            <Select
+              label="I am a..."
+              name="role"
+              value={form.role}
+              onChange={handleChange}
+              options={roleOptions}
+            />
 
             <Button
               type="submit"
               variant="primary"
-              className="w-full shadow-lg shadow-primary/25 mt-4"
+              className="w-full shadow-xl shadow-primary/25 mt-4"
               isLoading={loading}
             >
               Register
             </Button>
           </form>
 
-          <p className="mt-6 text-center text-sm text-slate-500">
+          <p className="mt-8 text-center text-sm text-slate-500 dark:text-slate-400">
             Already have an account?{" "}
             <Link to="/login" className="text-primary font-semibold hover:text-primary-hover transition-colors">
               Login here

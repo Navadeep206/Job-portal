@@ -1,10 +1,13 @@
 import { useEffect, useState } from "react";
+import { Search } from 'lucide-react';
 import { Link } from "react-router-dom";
 import API from "../../services/api";
 import BlurText from "../../components/animations/BlurText";
 import FadeIn from "../../components/animations/FadeIn";
 import JobCard from "../../components/JobCard";
 import Button from "../../components/ui/Button";
+import Input from "../../components/ui/Input";
+import Select from "../../components/ui/Select";
 import Skeleton from "../../components/ui/Skeleton";
 
 function JobList() {
@@ -65,52 +68,60 @@ function JobList() {
   return (
     <div className="space-y-8 pb-10">
       {/* Hero / Search Section */}
-      <FadeIn direction="down" className="relative bg-white p-8 rounded-2xl shadow-xl border border-slate-100 overflow-hidden">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none"></div>
-        <div className="absolute bottom-0 left-0 w-48 h-48 bg-purple-500/5 rounded-full blur-3xl -ml-10 -mb-10 pointer-events-none"></div>
+      <FadeIn direction="down" className="relative bg-white dark:bg-slate-900 p-8 rounded-3xl shadow-2xl border border-slate-100 dark:border-slate-800 overflow-hidden">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-primary/10 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none"></div>
+        <div className="absolute bottom-0 left-0 w-48 h-48 bg-purple-500/10 rounded-full blur-3xl -ml-10 -mb-10 pointer-events-none"></div>
 
         <div className="relative z-10 text-center mb-8">
           <BlurText
             text="Find Your Dream Job Today"
-            className="text-4xl md:text-5xl font-bold text-slate-900 mb-3 tracking-tight"
+            className="text-4xl md:text-5xl font-bold font-display text-slate-900 dark:text-white mb-3 tracking-tight"
             delay={0.2}
           />
-          <FadeIn delay={0.6} className="text-slate-500 text-lg">
+          <FadeIn delay={0.6} className="text-slate-500 dark:text-slate-400 text-lg">
             Connect with top employers and discover opportunities.
           </FadeIn>
         </div>
 
-        <form onSubmit={handleSearch} className="relative z-10 grid grid-cols-1 md:grid-cols-4 gap-4 bg-slate-50/50 p-2 rounded-xl border border-slate-100">
-          <input
-            type="text"
-            className="input bg-white border-transparent focus:border-primary shadow-sm"
+        <form onSubmit={handleSearch} className="relative z-10 grid grid-cols-1 md:grid-cols-4 gap-4 bg-slate-50/50 dark:bg-slate-800/50 p-2 rounded-2xl border border-slate-100 dark:border-slate-700/50 backdrop-blur-sm">
+          <Input
             placeholder="Job title or keyword"
             value={keyword}
             onChange={(e) => setKeyword(e.target.value)}
+            className="bg-white dark:bg-slate-900 border-none shadow-sm h-12"
           />
-          <input
-            type="text"
-            className="input bg-white border-transparent focus:border-primary shadow-sm"
+          <Input
             placeholder="Location"
             value={location}
             onChange={(e) => setLocation(e.target.value)}
+            className="bg-white dark:bg-slate-900 border-none shadow-sm h-12"
           />
-          <select
-            className="input bg-white border-transparent focus:border-primary shadow-sm"
+          <Select
             value={type}
             onChange={(e) => setType(e.target.value)}
-          >
-            <option value="">All Job Types</option>
-            <option value="Full-time">Full-time</option>
-            <option value="Part-time">Part-time</option>
-            <option value="Contract">Contract</option>
-            <option value="Internship">Internship</option>
-            <option value="Remote">Remote</option>
-          </select>
+            options={[
+              { value: "", label: "All Job Types" },
+              { value: "Full-time", label: "Full-time" },
+              { value: "Part-time", label: "Part-time" },
+              { value: "Contract", label: "Contract" },
+              { value: "Internship", label: "Internship" },
+              { value: "Remote", label: "Remote" },
+            ]}
+            placeholder="Select Type"
+            className="mb-0"
+          />
           <div className="flex gap-2">
-            <Button type="submit" variant="primary" className="flex-1 shadow-md shadow-primary/20">Search</Button>
-            <Button type="button" onClick={clearFilters} variant="ghost" className="px-3 text-slate-400 hover:text-slate-600" title="Clear Filters">
-              ✕
+            <Button type="submit" variant="primary" className="flex-1 shadow-lg shadow-primary/25 h-12">Search</Button>
+            <Button
+              type="button"
+              onClick={clearFilters}
+              variant="ghost"
+              className="px-3 text-slate-400 hover:text-red-500 dark:text-slate-500 dark:hover:text-red-400 h-12 w-12 flex items-center justify-center"
+              title="Clear Filters"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
             </Button>
           </div>
         </form>
@@ -145,12 +156,14 @@ function JobList() {
               <FadeIn key={job._id} delay={index * 0.05} direction="up">
                 <JobCard job={job} />
               </FadeIn>
+
+
             )) : (
               <div className="col-span-full">
-                <FadeIn className="text-center py-20 bg-white rounded-2xl shadow-sm border border-dashed border-slate-200">
-                  <div className="text-6xl mb-4">🔍</div>
-                  <h3 className="text-xl font-bold text-slate-800 mb-2">No jobs found</h3>
-                  <p className="text-slate-500 mb-6">Try adjusting your search criteria</p>
+                <FadeIn className="text-center py-20 bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-dashed border-slate-200 dark:border-slate-700">
+                  <div className="mb-4 flex justify-center text-slate-300 dark:text-slate-600"><Search size={64} /></div>
+                  <h3 className="text-xl font-bold text-slate-800 dark:text-white mb-2">No jobs found</h3>
+                  <p className="text-slate-500 dark:text-slate-400 mb-6">Try adjusting your search criteria</p>
                   <Button onClick={clearFilters} variant="outline">Clear Filters</Button>
                 </FadeIn>
               </div>

@@ -2,6 +2,7 @@ import React, { useContext } from 'react';
 import { JobContext } from '../context/JobContext';
 import JobCard from '../components/JobCard';
 import { Link } from 'react-router-dom';
+import { FolderOpen } from 'lucide-react';
 
 const SavedJobs = () => {
     const { savedJobs, loading } = useContext(JobContext);
@@ -38,7 +39,7 @@ const SavedJobs = () => {
                     </div>
                 ) : (
                     <div className="text-center py-20">
-                        <div className="text-6xl mb-4">📂</div>
+                        <div className="mb-4 text-slate-300 flex justify-center"><FolderOpen size={64} /></div>
                         <h2 className="text-xl font-semibold text-slate-800 mb-2">No Saved Jobs</h2>
                         <p className="text-slate-500 mb-6">You haven't saved any jobs yet.</p>
                         <Link

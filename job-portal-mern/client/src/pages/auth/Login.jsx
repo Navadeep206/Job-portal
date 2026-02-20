@@ -38,10 +38,10 @@ function Login() {
   return (
     <div className="flex items-center justify-center min-h-[80vh] px-4">
       <FadeIn delay={0.1}>
-        <Card className="w-full max-w-md p-8 shadow-xl border-slate-100">
+        <Card className="w-full max-w-md p-8 shadow-2xl border-slate-100 dark:border-slate-700">
           <div className="text-center mb-8">
-            <h2 className="text-3xl font-bold text-slate-900 mb-2">Welcome Back</h2>
-            <p className="text-slate-500">Login to access your account</p>
+            <h2 className="text-3xl font-bold font-display text-slate-900 dark:text-white mb-2">Welcome Back</h2>
+            <p className="text-slate-500 dark:text-slate-400">Login to access your account</p>
           </div>
 
           {error && (
