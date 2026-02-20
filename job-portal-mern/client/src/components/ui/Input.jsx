@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { twMerge } from 'tailwind-merge';
 
 const Input = React.forwardRef(({
@@ -11,10 +11,16 @@ const Input = React.forwardRef(({
 }, ref) => {
     const [isFocused, setIsFocused] = useState(false);
     const [hasValue, setHasValue] = useState(false);
+    const hasRenderableValue = props.value !== undefined && props.value !== null && String(props.value).length > 0;
+    const hasDefaultValue = props.defaultValue !== undefined && props.defaultValue !== null && String(props.defaultValue).length > 0;
+
+    useEffect(() => {
+        setHasValue(hasRenderableValue || hasDefaultValue);
+    }, [hasRenderableValue, hasDefaultValue]);
 
     const handleBlur = (e) => {
         setIsFocused(false);
-        setHasValue(e.target.value.length > 0);
+        setHasValue(e.target.value.trim().length > 0);
         if (props.onBlur) props.onBlur(e);
     };
 
@@ -24,20 +30,20 @@ const Input = React.forwardRef(({
     };
 
     const handleChange = (e) => {
-        setHasValue(e.target.value.length > 0);
+        setHasValue(e.target.value.trim().length > 0);
         if (props.onChange) props.onChange(e);
     };
 
     const labelClasses = twMerge(
         "absolute left-4 transition-all duration-200 pointer-events-none",
         Icon ? "left-10" : "left-4",
-        isFocused || hasValue || props.value
+        isFocused || hasValue || hasRenderableValue
             ? "-top-2.5 text-xs bg-white dark:bg-slate-900 px-1 text-primary font-medium z-10"
             : "top-3.5 text-sm text-slate-400 dark:text-slate-500"
     );
 
     const inputClasses = twMerge(
-        "input-field peer placeholder-transparent bg-transparent",
+        "input-field peer placeholder:text-transparent bg-transparent",
         Icon ? "pl-10" : "",
         error ? "border-error focus:border-error focus:ring-error/20" : "",
         className
@@ -56,13 +62,13 @@ const Input = React.forwardRef(({
                         onFocus={handleFocus}
                         onBlur={handleBlur}
                         onChange={handleChange}
-                        placeholder={label}
+                        placeholder={props.placeholder || label}
                         {...props}
                     />
                     {label && (
                         <label className={twMerge(
                             "absolute left-4 transition-all duration-200 pointer-events-none",
-                            isFocused || hasValue || props.value
+                            isFocused || hasValue || hasRenderableValue
                                 ? "-top-2.5 text-xs bg-white dark:bg-slate-900 px-1 text-primary font-medium"
                                 : "top-3 text-sm text-slate-400 dark:text-slate-500"
                         )}>
@@ -82,7 +88,7 @@ const Input = React.forwardRef(({
                     ref={ref}
                     type={type}
                     className={inputClasses}
-                    placeholder={label}
+                    placeholder={props.placeholder || label}
                     onFocus={handleFocus}
                     onBlur={handleBlur}
                     onChange={handleChange}
