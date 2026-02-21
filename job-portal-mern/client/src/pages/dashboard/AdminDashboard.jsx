@@ -1,18 +1,24 @@
 import { useEffect, useState } from "react";
 import API from "../../services/api";
-import Card from "../../components/ui/Card";
-import Button from "../../components/ui/Button";
+import { useLocation } from "react-router-dom";
+
+const ROLE_BADGE = {
+  admin: { bg: '#f5f3ff', color: '#7c3aed', border: '#ddd6fe' },
+  recruiter: { bg: '#f0fdf4', color: '#15803d', border: '#bbf7d0' },
+  user: { bg: '#eff6ff', color: '#1d4ed8', border: '#bfdbfe' },
+};
+
+const TH = { padding: '12px 20px', textAlign: 'left', fontSize: 11, fontWeight: 700, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.08em', background: '#f8fafc', borderBottom: '1px solid #e2e8f0' };
+const TD = { padding: '14px 20px', fontSize: 14, color: '#374151', fontWeight: 500, borderBottom: '1px solid #f1f5f9' };
 
 function AdminDashboard() {
-  const [stats, setStats] = useState({
-    users: 0,
-    jobs: 0,
-    applications: 0
-  });
+  const [stats, setStats] = useState({ users: 0, jobs: 0, applications: 0 });
   const [analytics, setAnalytics] = useState([]);
   const [users, setUsers] = useState([]);
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
+  const location = useLocation();
+  const path = location.pathname;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -22,202 +28,169 @@ function AdminDashboard() {
           API.get("/admin/stats"),
           API.get("/admin/analytics/jobs"),
           API.get("/admin/users"),
-          API.get("/jobs?limit=100") // Fetch all jobs (paginated but limit high)
+          API.get("/jobs?limit=100"),
         ]);
-
         setStats(statsRes.data);
         setAnalytics(analyticsRes.data.data);
         setUsers(usersRes.data);
-        setJobs(jobsRes.data.jobs); // Access .jobs array from response
-      } catch (err) {
-        console.error("Failed to fetch admin data", err);
-      } finally {
-        setLoading(false);
-      }
+        setJobs(jobsRes.data.jobs);
+      } catch { /* silent */ } finally { setLoading(false); }
     };
-
     fetchData();
   }, []);
 
   const handleDeleteUser = async (id) => {
-    if (window.confirm("Are you sure you want to delete this user?")) {
-      try {
-        await API.delete(`/admin/users/${id}`);
-        setUsers(users.filter((user) => user._id !== id));
-        setStats({ ...stats, users: stats.users - 1 });
-      } catch (err) {
-        console.error("Failed to delete user", err);
-        alert("Failed to delete user");
-      }
-    }
+    if (!window.confirm("Delete this user?")) return;
+    try { await API.delete(`/admin/users/${id}`); setUsers(u => u.filter(x => x._id !== id)); setStats(s => ({ ...s, users: s.users - 1 })); }
+    catch { alert("Failed to delete user"); }
   };
 
   const handleDeleteJob = async (id) => {
-    if (window.confirm("Are you sure you want to delete this job?")) {
-      try {
-        await API.delete(`/jobs/${id}`);
-        setJobs(jobs.filter((job) => job._id !== id));
-        setStats({ ...stats, jobs: stats.jobs - 1 });
-      } catch (err) {
-        console.error("Failed to delete job", err);
-        alert("Failed to delete job");
-      }
-    }
+    if (!window.confirm("Delete this job?")) return;
+    try { await API.delete(`/jobs/${id}`); setJobs(j => j.filter(x => x._id !== id)); setStats(s => ({ ...s, jobs: s.jobs - 1 })); }
+    catch { alert("Failed to delete job"); }
   };
 
-  if (loading) return <div className="text-center p-10 text-slate-500">Loading admin dashboard...</div>;
+  const STAT_CARDS = [
+    {
+      label: 'Total Users', value: stats.users, color: '#3b82f6', bg: '#eff6ff', border: '#bfdbfe',
+      icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /></svg>
+    },
+    {
+      label: 'Total Jobs', value: stats.jobs, color: '#8b5cf6', bg: '#f5f3ff', border: '#ddd6fe',
+      icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" /><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2" /></svg>
+    },
+    {
+      label: 'Total Applications', value: stats.applications, color: '#10b981', bg: '#f0fdf4', border: '#bbf7d0',
+      icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><polyline points="14 2 14 8 20 8" /><line x1="16" y1="13" x2="8" y2="13" /><line x1="16" y1="17" x2="8" y2="17" /></svg>
+    },
+  ];
 
-  const path = window.location.pathname; // Simple check, or use useLocation hook
+  if (loading) return (
+    <div>
+      <div style={{ height: 36, borderRadius: 10, background: 'rgba(255,255,255,0.6)', width: '30%', marginBottom: 28 }} />
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 20, marginBottom: 28 }}>
+        {[1, 2, 3].map(i => <div key={i} style={{ height: 110, borderRadius: 20, background: 'rgba(255,255,255,0.6)', border: '1px solid #e2e8f0' }} />)}
+      </div>
+    </div>
+  );
 
   return (
-    <div className="fade-in space-y-8">
-
-      {/* Overview Section */}
+    <div>
+      {/* ── OVERVIEW ── */}
       {(path === '/admin' || path === '/admin/') && (
         <>
-          <h2 className="text-2xl font-bold mb-6 text-slate-800">Admin Dashboard</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            <Card className="bg-white border-l-4 border-l-primary hover:translate-y-[-2px]">
-              <h3 className="text-slate-500 text-sm font-medium uppercase tracking-wider">Total Users</h3>
-              <p className="text-3xl font-bold text-slate-800 mt-2">{stats.users}</p>
-            </Card>
-            <Card className="bg-white border-l-4 border-l-secondary hover:translate-y-[-2px]">
-              <h3 className="text-slate-500 text-sm font-medium uppercase tracking-wider">Total Jobs</h3>
-              <p className="text-3xl font-bold text-slate-800 mt-2">{stats.jobs}</p>
-            </Card>
-            <Card className="bg-white border-l-4 border-l-emerald-500 hover:translate-y-[-2px]">
-              <h3 className="text-slate-500 text-sm font-medium uppercase tracking-wider">Total Applications</h3>
-              <p className="text-3xl font-bold text-slate-800 mt-2">{stats.applications}</p>
-            </Card>
+          <div style={{ marginBottom: 32 }}>
+            <h1 style={{ fontSize: 28, fontWeight: 900, color: '#0f172a', marginBottom: 4, fontFamily: 'Inter,sans-serif' }}>Admin Dashboard</h1>
+            <p style={{ fontSize: 14, color: '#64748b' }}>Monitor and manage the entire platform</p>
           </div>
 
-          <Card>
-            <h3 className="text-xl font-bold mb-4 text-slate-800 border-b border-slate-100 pb-4">Job Performance Analytics</h3>
-            {analytics.length === 0 ? (
-              <p className="text-slate-500 text-center py-8">No job analytics available.</p>
-            ) : (
-              <div className="overflow-x-auto rounded-lg border border-slate-200">
-                <table className="min-w-full divide-y divide-slate-200">
-                  <thead className="bg-slate-50">
-                    <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Job ID</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Job Title</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Applications</th>
-                    </tr>
-                  </thead>
-                  <tbody className="bg-white divide-y divide-slate-200">
-                    {analytics.map((item) => (
-                      <tr key={item._id} className="hover:bg-slate-50 transition-colors">
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900">
-                          {item._id.substring(0, 8)}...
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-600">
-                          {item.title || "Job Title"}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500">
-                          <span className="bg-indigo-50 text-indigo-700 px-3 py-1 rounded-full text-xs font-bold border border-indigo-100">{item.count}</span>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+          {/* Stat cards */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 20, marginBottom: 32 }}>
+            {STAT_CARDS.map(s => (
+              <div key={s.label} style={{ padding: '24px', borderRadius: 24, background: 'rgba(255,255,255,0.95)', border: '1.5px solid #e2e8f0', boxShadow: '0 4px 20px rgba(0,0,0,0.05)' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 16 }}>
+                  <div>
+                    <p style={{ fontSize: 12, fontWeight: 700, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 8 }}>{s.label}</p>
+                    <p style={{ fontSize: 36, fontWeight: 900, color: s.color, lineHeight: 1 }}>{s.value}</p>
+                  </div>
+                  <div style={{ width: 48, height: 48, borderRadius: 14, background: s.bg, border: `1px solid ${s.border}`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    {s.icon}
+                  </div>
+                </div>
               </div>
+            ))}
+          </div>
+
+          {/* Analytics table */}
+          <div style={{ background: 'rgba(255,255,255,0.95)', borderRadius: 24, border: '1.5px solid #e2e8f0', overflow: 'hidden', boxShadow: '0 4px 20px rgba(0,0,0,0.04)' }}>
+            <div style={{ padding: '22px 24px', borderBottom: '1px solid #f1f5f9' }}>
+              <h3 style={{ fontSize: 16, fontWeight: 800, color: '#0f172a' }}>Job Performance Analytics</h3>
+            </div>
+            {analytics.length === 0 ? (
+              <div style={{ textAlign: 'center', padding: '48px', color: '#94a3b8', fontSize: 14 }}>No analytics data available yet</div>
+            ) : (
+              <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                <thead><tr><th style={TH}>Job ID</th><th style={TH}>Job Title</th><th style={TH}>Applications</th></tr></thead>
+                <tbody>
+                  {analytics.map(item => (
+                    <tr key={item._id}>
+                      <td style={TD}><span style={{ fontFamily: 'monospace', fontSize: 13, color: '#94a3b8' }}>{item._id.substring(0, 10)}…</span></td>
+                      <td style={{ ...TD, fontWeight: 700, color: '#0f172a' }}>{item.title || 'N/A'}</td>
+                      <td style={TD}><span style={{ padding: '4px 12px', borderRadius: 99, fontSize: 12, fontWeight: 700, background: '#f5f3ff', border: '1px solid #ddd6fe', color: '#7c3aed' }}>{item.count}</span></td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             )}
-          </Card>
+          </div>
         </>
       )}
 
-      {/* Manage Users Section */}
+      {/* ── MANAGE USERS ── */}
       {path === '/admin/users' && (
-        <Card>
-          <h3 className="text-xl font-bold mb-4 text-slate-800 border-b border-slate-100 pb-4">Manage Users</h3>
-          <div className="overflow-x-auto rounded-lg border border-slate-200">
-            <table className="min-w-full divide-y divide-slate-200">
-              <thead className="bg-slate-50">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Name</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Email</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Role</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-slate-200">
-                {users.map((user) => (
-                  <tr key={user._id} className="hover:bg-slate-50 transition-colors">
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900">{user.name}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500">{user.email}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500">
-                      <span className={`px-2 py-1 rounded-full text-xs font-bold border ${user.role === 'admin' ? 'bg-purple-50 text-purple-700 border-purple-100' : user.role === 'recruiter' ? 'bg-emerald-50 text-emerald-700 border-emerald-100' : 'bg-slate-100 text-slate-600 border-slate-200'}`}>
-                        {user.role}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500">
-                      <Button
-                        variant="danger"
-                        size="xs"
-                        onClick={() => handleDeleteUser(user._id)}
-                        disabled={user.role === 'admin'}
-                        className="bg-red-50 text-red-600 hover:bg-red-100 border-red-100"
-                      >
-                        Delete
-                      </Button>
-                    </td>
-                  </tr>
-                ))}
-                {users.length === 0 && (
-                  <tr>
-                    <td colSpan="4" className="px-6 py-8 text-center text-slate-500">No users found</td>
-                  </tr>
-                )}
+        <div>
+          <div style={{ marginBottom: 28 }}>
+            <h1 style={{ fontSize: 28, fontWeight: 900, color: '#0f172a', marginBottom: 4, fontFamily: 'Inter,sans-serif' }}>Manage Users</h1>
+            <p style={{ fontSize: 14, color: '#64748b' }}>{users.length} registered users on the platform</p>
+          </div>
+          <div style={{ background: 'rgba(255,255,255,0.95)', borderRadius: 24, border: '1.5px solid #e2e8f0', overflow: 'hidden', boxShadow: '0 4px 20px rgba(0,0,0,0.04)' }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+              <thead><tr><th style={TH}>Name</th><th style={TH}>Email</th><th style={TH}>Role</th><th style={TH}>Actions</th></tr></thead>
+              <tbody>
+                {users.map(user => {
+                  const rb = ROLE_BADGE[user.role] || ROLE_BADGE.user;
+                  return (
+                    <tr key={user._id}>
+                      <td style={{ ...TD, fontWeight: 700 }}>{user.name}</td>
+                      <td style={TD}>{user.email}</td>
+                      <td style={TD}><span style={{ padding: '4px 12px', borderRadius: 99, fontSize: 11, fontWeight: 700, textTransform: 'uppercase', background: rb.bg, border: `1px solid ${rb.border}`, color: rb.color }}>{user.role}</span></td>
+                      <td style={TD}>
+                        <button onClick={() => handleDeleteUser(user._id)} disabled={user.role === 'admin'}
+                          style={{ padding: '6px 14px', borderRadius: 8, fontSize: 12, fontWeight: 700, cursor: user.role === 'admin' ? 'not-allowed' : 'pointer', background: '#fef2f2', border: '1px solid #fecaca', color: '#dc2626', opacity: user.role === 'admin' ? 0.4 : 1 }}>
+                          Delete
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
+                {users.length === 0 && <tr><td colSpan="4" style={{ ...TD, textAlign: 'center', color: '#94a3b8', padding: 48 }}>No users found</td></tr>}
               </tbody>
             </table>
           </div>
-        </Card>
+        </div>
       )}
 
-      {/* Manage Jobs Section */}
+      {/* ── MANAGE JOBS ── */}
       {path === '/admin/jobs' && (
-        <Card>
-          <h3 className="text-xl font-bold mb-4 text-slate-800 border-b border-slate-100 pb-4">Manage Jobs</h3>
-          <div className="overflow-x-auto rounded-lg border border-slate-200">
-            <table className="min-w-full divide-y divide-slate-200">
-              <thead className="bg-slate-50">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Title</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Company</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Posted By</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Date</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-slate-200">
-                {jobs.map((job) => (
-                  <tr key={job._id} className="hover:bg-slate-50 transition-colors">
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900">{job.title}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500">{job.company}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500">{job.postedBy?.email || "N/A"}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500">{new Date(job.createdAt).toLocaleDateString()}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500">
-                      <Button
-                        variant="danger"
-                        size="xs"
-                        onClick={() => handleDeleteJob(job._id)}
-                        className="bg-red-50 text-red-600 hover:bg-red-100 border-red-100"
-                      >
+        <div>
+          <div style={{ marginBottom: 28 }}>
+            <h1 style={{ fontSize: 28, fontWeight: 900, color: '#0f172a', marginBottom: 4, fontFamily: 'Inter,sans-serif' }}>Manage Jobs</h1>
+            <p style={{ fontSize: 14, color: '#64748b' }}>{jobs.length} active job listings on the platform</p>
+          </div>
+          <div style={{ background: 'rgba(255,255,255,0.95)', borderRadius: 24, border: '1.5px solid #e2e8f0', overflow: 'hidden', boxShadow: '0 4px 20px rgba(0,0,0,0.04)' }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+              <thead><tr><th style={TH}>Title</th><th style={TH}>Company</th><th style={TH}>Posted By</th><th style={TH}>Date</th><th style={TH}>Actions</th></tr></thead>
+              <tbody>
+                {jobs.map(job => (
+                  <tr key={job._id}>
+                    <td style={{ ...TD, fontWeight: 700 }}>{job.title}</td>
+                    <td style={TD}>{job.company}</td>
+                    <td style={{ ...TD, color: '#94a3b8' }}>{job.postedBy?.email || 'N/A'}</td>
+                    <td style={{ ...TD, color: '#94a3b8' }}>{new Date(job.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</td>
+                    <td style={TD}>
+                      <button onClick={() => handleDeleteJob(job._id)}
+                        style={{ padding: '6px 14px', borderRadius: 8, fontSize: 12, fontWeight: 700, cursor: 'pointer', background: '#fef2f2', border: '1px solid #fecaca', color: '#dc2626' }}>
                         Delete
-                      </Button>
+                      </button>
                     </td>
                   </tr>
                 ))}
-                {jobs.length === 0 && (
-                  <tr>
-                    <td colSpan="5" className="px-6 py-8 text-center text-slate-500">No jobs found</td>
-                  </tr>
-                )}
+                {jobs.length === 0 && <tr><td colSpan="5" style={{ ...TD, textAlign: 'center', color: '#94a3b8', padding: 48 }}>No jobs found</td></tr>}
               </tbody>
             </table>
           </div>
-        </Card>
+        </div>
       )}
     </div>
   );

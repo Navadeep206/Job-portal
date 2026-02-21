@@ -38,12 +38,12 @@ const Input = React.forwardRef(({
         "absolute left-4 transition-all duration-200 pointer-events-none",
         Icon ? "left-10" : "left-4",
         isFocused || hasValue || hasRenderableValue
-            ? "-top-2.5 text-xs bg-white dark:bg-slate-900 px-1 text-primary font-medium z-10"
+            ? "-top-2.5 text-xs bg-white/80 dark:bg-slate-900/80 backdrop-blur-md rounded-md px-1.5 py-0.5 text-primary font-medium z-10 shadow-sm"
             : "top-3.5 text-sm text-slate-400 dark:text-slate-500"
     );
 
     const inputClasses = twMerge(
-        "input-field peer placeholder:text-transparent bg-transparent",
+        "input-field peer placeholder:text-transparent",
         Icon ? "pl-10" : "",
         error ? "border-error focus:border-error focus:ring-error/20" : "",
         className
@@ -56,7 +56,7 @@ const Input = React.forwardRef(({
                     <textarea
                         ref={ref}
                         className={twMerge(
-                            "flex min-h-[100px] w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm ring-offset-white placeholder:text-transparent focus-visible:outline-none focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/20 disabled:cursor-not-allowed disabled:opacity-50 transition-all duration-200 dark:bg-slate-900 dark:border-slate-700 dark:text-white peer",
+                            "flex min-h-[100px] w-full rounded-xl border border-slate-200 bg-white/50 backdrop-blur-sm px-4 py-3 text-sm ring-offset-white placeholder:text-transparent focus-visible:outline-none focus-visible:border-primary focus-visible:ring-4 focus-visible:ring-primary/20 disabled:cursor-not-allowed disabled:opacity-50 transition-all duration-300 dark:bg-slate-900/50 dark:border-slate-700 dark:text-white hover:bg-white/80 dark:hover:bg-slate-900/80 peer",
                             error ? "border-error focus:border-error" : ""
                         )}
                         onFocus={handleFocus}
@@ -69,7 +69,7 @@ const Input = React.forwardRef(({
                         <label className={twMerge(
                             "absolute left-4 transition-all duration-200 pointer-events-none",
                             isFocused || hasValue || hasRenderableValue
-                                ? "-top-2.5 text-xs bg-white dark:bg-slate-900 px-1 text-primary font-medium"
+                                ? "-top-2.5 text-xs bg-white/80 dark:bg-slate-900/80 backdrop-blur-md rounded-md px-1.5 py-0.5 text-primary font-medium shadow-sm"
                                 : "top-3 text-sm text-slate-400 dark:text-slate-500"
                         )}>
                             {label}

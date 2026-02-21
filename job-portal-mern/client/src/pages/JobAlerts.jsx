@@ -1,151 +1,208 @@
 import { useState, useEffect } from "react";
 import api from "../services/api";
-import { useJob } from "../context/JobContext";
-import Card from "../components/ui/Card";
-import Button from "../components/ui/Button";
-import Input from "../components/ui/Input";
+
+const FIELD_STYLE = {
+    width: '100%', padding: '12px 16px', borderRadius: 12, fontSize: 14,
+    border: '1.5px solid #e2e8f0', outline: 'none', fontFamily: 'Inter,sans-serif',
+    color: '#0f172a', background: '#fff', transition: 'border 0.2s', boxSizing: 'border-box',
+};
+const LABEL = { fontSize: 13, fontWeight: 700, color: '#374151', marginBottom: 6, display: 'block' };
+
+const FREQ_BADGE = {
+    daily: { bg: '#eff6ff', color: '#1d4ed8', border: '#bfdbfe' },
+    weekly: { bg: '#f5f3ff', color: '#7c3aed', border: '#ddd6fe' },
+};
 
 function JobAlerts() {
     const [alerts, setAlerts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [createError, setCreateError] = useState(null);
+    const [creating, setCreating] = useState(false);
+    const [formData, setFormData] = useState({ keywords: '', location: '', frequency: 'daily' });
 
-    const [formData, setFormData] = useState({
-        keywords: "",
-        location: "",
-        frequency: "daily"
-    });
-
-    useEffect(() => {
-        fetchAlerts();
-    }, []);
+    useEffect(() => { fetchAlerts(); }, []);
 
     const fetchAlerts = async () => {
         try {
-            const res = await api.get("/users/alerts");
+            const res = await api.get('/users/alerts');
             setAlerts(res.data.alerts);
-        } catch (err) {
-            console.error(err);
-            setError("Failed to load alerts");
-        } finally {
-            setLoading(false);
-        }
+        } catch { setError('Failed to load alerts'); }
+        finally { setLoading(false); }
     };
 
-    const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
-    };
+    const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
 
     const handleCreate = async (e) => {
         e.preventDefault();
         setCreateError(null);
+        setCreating(true);
         try {
-            const res = await api.post("/users/alerts", formData);
+            const res = await api.post('/users/alerts', formData);
             setAlerts([res.data.alert, ...alerts]);
-            setFormData({ keywords: "", location: "", frequency: "daily" }); // Reset form
+            setFormData({ keywords: '', location: '', frequency: 'daily' });
         } catch (err) {
-            setCreateError(err.response?.data?.message || "Failed to create alert");
-        }
+            setCreateError(err.response?.data?.message || 'Failed to create alert');
+        } finally { setCreating(false); }
     };
 
     const handleDelete = async (id) => {
-        if (!window.confirm("Are you sure you want to delete this alert?")) return;
+        if (!window.confirm('Delete this alert?')) return;
         try {
             await api.delete(`/users/alerts/${id}`);
             setAlerts(alerts.filter(a => a._id !== id));
-        } catch (err) {
-            console.error(err);
-            alert("Failed to delete alert");
-        }
+        } catch { alert('Failed to delete alert'); }
     };
 
-    if (loading) return <div className="flex justify-center p-8">Loading alerts...</div>;
-
     return (
-        <div className="max-w-4xl mx-auto py-10 px-4 fade-in">
-            <div className="flex justify-between items-center mb-8">
-                <h1 className="text-3xl font-bold text-slate-900">Job Alerts</h1>
+        <div>
+            {/* Page header */}
+            <div style={{ marginBottom: 32 }}>
+                <h1 style={{ fontSize: 28, fontWeight: 900, color: '#0f172a', marginBottom: 4, fontFamily: 'Inter,sans-serif' }}>Job Alerts</h1>
+                <p style={{ fontSize: 14, color: '#64748b' }}>Get notified instantly when matching jobs are posted</p>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                {/* Create Alert Form */}
-                <div className="lg:col-span-1">
-                    <Card className="p-6 sticky top-24">
-                        <h2 className="text-xl font-bold mb-4 text-slate-800">Create Alert</h2>
-                        <form onSubmit={handleCreate} className="space-y-4">
-                            <Input
-                                label="Keywords"
-                                name="keywords"
-                                value={formData.keywords}
-                                onChange={handleChange}
-                                placeholder="e.g. React Developer"
-                                required
-                            />
-                            <Input
-                                label="Location"
-                                name="location"
-                                value={formData.location}
-                                onChange={handleChange}
-                                placeholder="e.g. Remote, New York"
-                                required
-                            />
+            <div style={{ display: 'grid', gridTemplateColumns: '340px 1fr', gap: 24, alignItems: 'start' }}>
+
+                {/* ── Create Alert form ── */}
+                <div style={{ position: 'sticky', top: 24 }}>
+                    <div style={{
+                        background: 'rgba(255,255,255,0.95)', borderRadius: 24, padding: '28px',
+                        border: '1.5px solid #e2e8f0', boxShadow: '0 4px 20px rgba(59,130,246,0.08)',
+                        overflow: 'hidden', position: 'relative',
+                    }}>
+                        {/* Top gradient bar */}
+                        <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 4, background: 'linear-gradient(90deg,#3b82f6,#8b5cf6,#06b6d4)' }} />
+
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 24 }}>
+                            <div style={{ width: 40, height: 40, borderRadius: 12, background: 'linear-gradient(135deg,#eff6ff,#eef2ff)', border: '1px solid #bfdbfe', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" /><path d="M13.73 21a2 2 0 0 1-3.46 0" />
+                                </svg>
+                            </div>
+                            <h2 style={{ fontSize: 17, fontWeight: 800, color: '#0f172a' }}>Create Alert</h2>
+                        </div>
+
+                        {createError && (
+                            <div style={{ padding: '10px 14px', borderRadius: 10, background: '#fef2f2', border: '1px solid #fecaca', color: '#dc2626', fontSize: 12, fontWeight: 600, marginBottom: 18 }}>
+                                Error: {createError}
+                            </div>
+                        )}
+
+                        <form onSubmit={handleCreate} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
                             <div>
-                                <label className="block text-sm font-medium text-slate-700 mb-1">Frequency</label>
-                                <select
-                                    name="frequency"
-                                    value={formData.frequency}
-                                    onChange={handleChange}
-                                    className="w-full rounded-xl border-slate-200 text-sm focus:ring-primary focus:border-primary"
-                                >
-                                    <option value="daily">Daily</option>
-                                    <option value="weekly">Weekly</option>
-                                </select>
+                                <label style={LABEL}>Keywords <span style={{ color: '#ef4444' }}>*</span></label>
+                                <input name="keywords" value={formData.keywords} onChange={handleChange} placeholder="e.g. React Developer, Python" required
+                                    style={FIELD_STYLE} onFocus={e => e.target.style.borderColor = '#3b82f6'} onBlur={e => e.target.style.borderColor = '#e2e8f0'} />
+                            </div>
+                            <div>
+                                <label style={LABEL}>Location <span style={{ color: '#ef4444' }}>*</span></label>
+                                <input name="location" value={formData.location} onChange={handleChange} placeholder="e.g. Remote, New York" required
+                                    style={FIELD_STYLE} onFocus={e => e.target.style.borderColor = '#3b82f6'} onBlur={e => e.target.style.borderColor = '#e2e8f0'} />
+                            </div>
+                            <div>
+                                <label style={LABEL}>Frequency</label>
+                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+                                    {['daily', 'weekly'].map(f => (
+                                        <button key={f} type="button" onClick={() => setFormData({ ...formData, frequency: f })}
+                                            style={{
+                                                padding: '10px', borderRadius: 10, fontSize: 13, fontWeight: 700, cursor: 'pointer', transition: 'all 0.2s', textTransform: 'capitalize',
+                                                background: formData.frequency === f ? 'linear-gradient(135deg,#eff6ff,#eef2ff)' : '#f8fafc',
+                                                border: formData.frequency === f ? '2px solid #3b82f6' : '2px solid #e2e8f0',
+                                                color: formData.frequency === f ? '#1d4ed8' : '#64748b',
+                                            }}>
+                                            {f === 'daily'
+                                                ? <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5 }}><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" /><line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" /></svg>Daily</span>
+                                                : <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5 }}><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" /><line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" /><path d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01M16 18h.01" /></svg>Weekly</span>}
+                                        </button>
+                                    ))}
+                                </div>
                             </div>
 
-                            {createError && <p className="text-red-500 text-sm">{createError}</p>}
-
-                            <Button type="submit" className="w-full">Create Alert</Button>
+                            <button type="submit" disabled={creating} style={{
+                                padding: '13px', borderRadius: 14, border: 'none', cursor: 'pointer', marginTop: 4,
+                                fontSize: 14, fontWeight: 700, color: '#fff',
+                                background: creating ? '#94a3b8' : 'linear-gradient(135deg,#3b82f6,#8b5cf6)',
+                                boxShadow: creating ? 'none' : '0 4px 18px rgba(99,102,241,0.4)',
+                                transition: 'all 0.2s',
+                            }}>
+                                {creating ? 'Creating…' : <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7 }}><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" /><path d="M13.73 21a2 2 0 0 1-3.46 0" /></svg>Create Alert</span>}
+                            </button>
                         </form>
-                    </Card>
+                    </div>
                 </div>
 
-                {/* Alerts List */}
-                <div className="lg:col-span-2 space-y-4">
-                    {error && <p className="text-red-500">{error}</p>}
+                {/* ── Alerts list ── */}
+                <div>
+                    {/* Stats pill */}
+                    {!loading && alerts.length > 0 && (
+                        <div style={{ marginBottom: 20 }}>
+                            <span style={{ padding: '6px 16px', borderRadius: 99, fontSize: 13, fontWeight: 700, background: '#f5f3ff', border: '1px solid #ddd6fe', color: '#7c3aed' }}>
+                                {alerts.length} active alert{alerts.length !== 1 ? 's' : ''}
+                            </span>
+                        </div>
+                    )}
 
-                    {alerts.length === 0 ? (
-                        <div className="text-center py-12 bg-slate-50 rounded-2xl border border-dashed border-slate-200">
-                            <p className="text-slate-500">No job alerts set up yet.</p>
-                            <p className="text-sm text-slate-400 mt-1">Create one to get notified about new opportunities!</p>
+                    {error && (
+                        <div style={{ padding: '12px 16px', borderRadius: 12, background: '#fef2f2', border: '1px solid #fecaca', color: '#dc2626', fontSize: 13, marginBottom: 16 }}>Error: {error}</div>
+                    )}
+
+                    {loading ? (
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                            {[1, 2, 3].map(i => <div key={i} style={{ height: 80, borderRadius: 20, background: 'rgba(255,255,255,0.6)', border: '1px solid #e2e8f0' }} />)}
+                        </div>
+                    ) : alerts.length === 0 ? (
+                        <div style={{ textAlign: 'center', padding: '64px 32px', borderRadius: 24, background: 'rgba(255,255,255,0.8)', border: '2px dashed #e2e8f0', backdropFilter: 'blur(8px)' }}>
+                            <div style={{ width: 72, height: 72, borderRadius: 24, margin: '0 auto 20px', background: 'linear-gradient(135deg,#f5f3ff,#eef2ff)', border: '1px solid #ddd6fe', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#c4b5fd" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" /><path d="M13.73 21a2 2 0 0 1-3.46 0" />
+                                </svg>
+                            </div>
+                            <h3 style={{ fontSize: 18, fontWeight: 800, color: '#0f172a', marginBottom: 8 }}>No alerts yet</h3>
+                            <p style={{ fontSize: 14, color: '#64748b' }}>Create an alert to get notified when matching jobs are posted.</p>
                         </div>
                     ) : (
-                        alerts.map(alert => (
-                            <Card key={alert._id} className="p-5 flex justify-between items-center hover:shadow-md transition-all">
-                                <div>
-                                    <h3 className="font-bold text-lg text-slate-800">{alert.keywords}</h3>
-                                    <div className="flex items-center gap-3 mt-1 text-sm text-slate-500">
-                                        <span className="flex items-center gap-1">
-                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
-                                                <path fillRule="evenodd" d="M9.69 18.933l.003.001C9.89 19.02 10 19 10 19s.11.02.308-.066l.002-.001.006-.003.018-.008a5.741 5.741 0 00.281-.14c.186-.096.446-.24.757-.433.62-.384 1.445-.966 2.274-1.765C15.302 14.988 17 12.493 17 9A7 7 0 103 9c0 3.492 1.698 5.988 3.355 7.625a19.055 19.055 0 005.335 2.308zM10 16a6.995 6.995 0 01-1.12-11.905A7 7 0 1115 11v.005a5 5 0 01-5 4.995z" clipRule="evenodd" />
-                                            </svg>
-                                            {alert.location}
-                                        </span>
-                                        <span className="flex items-center gap-1 bg-slate-100 px-2 py-0.5 rounded-full text-xs font-medium">
-                                            {alert.frequency}
-                                        </span>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+                            {alerts.map(alert => {
+                                const fb = FREQ_BADGE[alert.frequency] || FREQ_BADGE.daily;
+                                return (
+                                    <div key={alert._id} style={{
+                                        display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12,
+                                        padding: '20px 24px', borderRadius: 20,
+                                        background: 'rgba(255,255,255,0.9)', border: '1.5px solid #e2e8f0',
+                                        boxShadow: '0 2px 12px rgba(0,0,0,0.04)', transition: 'all 0.2s',
+                                    }}>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+                                            <div style={{ width: 44, height: 44, borderRadius: 14, flexShrink: 0, background: 'linear-gradient(135deg,#f5f3ff,#eef2ff)', border: '1px solid #ddd6fe', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" /><path d="M13.73 21a2 2 0 0 1-3.46 0" />
+                                                </svg>
+                                            </div>
+                                            <div>
+                                                <h4 style={{ fontSize: 16, fontWeight: 800, color: '#0f172a', marginBottom: 6 }}>{alert.keywords}</h4>
+                                                <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
+                                                    {alert.location && (
+                                                        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 5, fontSize: 12, fontWeight: 600, color: '#64748b', padding: '3px 10px', borderRadius: 99, background: '#f8fafc', border: '1px solid #e2e8f0' }}>
+                                                            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" /><circle cx="12" cy="10" r="3" /></svg>
+                                                            {alert.location}
+                                                        </span>
+                                                    )}
+                                                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: 5, fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', padding: '3px 10px', borderRadius: 99, background: fb.bg, border: `1px solid ${fb.border}`, color: fb.color }}>
+                                                        <span style={{ width: 5, height: 5, borderRadius: '50%', background: fb.color }} />
+                                                        {alert.frequency}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <button onClick={() => handleDelete(alert._id)}
+                                            style={{ padding: '8px 16px', borderRadius: 10, fontSize: 12, fontWeight: 700, cursor: 'pointer', background: '#fef2f2', border: '1px solid #fecaca', color: '#dc2626', flexShrink: 0 }}>
+                                            Delete
+                                        </button>
                                     </div>
-                                </div>
-                                <Button
-                                    variant="outline"
-                                    size="sm"
-                                    className="text-red-500 hover:text-red-600 hover:bg-red-50 border-red-200"
-                                    onClick={() => handleDelete(alert._id)}
-                                >
-                                    Delete
-                                </Button>
-                            </Card>
-                        ))
+                                );
+                            })}
+                        </div>
                     )}
                 </div>
             </div>

@@ -10,20 +10,21 @@ const Button = React.forwardRef(({
     children,
     ...props
 }, ref) => {
-    const baseStyles = 'inline-flex items-center justify-center font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary/50 dark:focus:ring-offset-slate-900 disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.98]';
+    const baseStyles = 'inline-flex items-center justify-center font-semibold transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary/50 dark:focus:ring-offset-slate-900 disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.98] font-sans';
 
     const variants = {
-        primary: 'bg-primary text-white hover:bg-primary-hover shadow-lg shadow-primary/25 hover:shadow-primary/40 border border-transparent',
-        secondary: 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-50 hover:border-slate-300 dark:bg-slate-800 dark:text-slate-200 dark:border-slate-700 dark:hover:bg-slate-700',
-        outline: 'bg-transparent border border-primary text-primary hover:bg-primary/5 dark:hover:bg-primary/10',
-        ghost: 'bg-transparent text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-100',
-        danger: 'bg-red-500 text-white hover:bg-red-600 shadow-lg shadow-red-500/25 border border-transparent',
+        primary: 'bg-gradient-to-r from-primary to-secondary text-white hover:shadow-lg hover:shadow-primary/30 border border-transparent hover:-translate-y-0.5',
+        secondary: 'bg-white/50 backdrop-blur-sm text-slate-700 border border-white/50 hover:bg-white/80 dark:bg-slate-800/50 dark:text-slate-200 dark:border-slate-700/50 dark:hover:bg-slate-800/80 shadow-sm',
+        outline: 'bg-transparent border border-slate-300 text-slate-700 hover:bg-slate-50 hover:text-slate-900 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800/50 dark:hover:text-slate-100',
+        ghost: 'bg-transparent text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800/50 dark:hover:text-slate-100',
+        danger: 'bg-gradient-to-r from-red-500 to-rose-600 text-white hover:shadow-lg hover:shadow-red-500/30 border border-transparent hover:-translate-y-0.5',
     };
 
     const sizes = {
-        sm: 'text-xs px-3 py-1.5 rounded-lg',
-        md: 'text-sm px-5 py-2.5 rounded-xl',
-        lg: 'text-base px-6 py-3.5 rounded-2xl',
+        xs: 'text-xs px-2.5 py-1.5 rounded-md',
+        sm: 'text-sm px-3.5 py-2 rounded-md',
+        md: 'text-sm px-5 py-2.5 rounded-md',
+        lg: 'text-base px-6 py-3 rounded-md',
     };
 
     return (

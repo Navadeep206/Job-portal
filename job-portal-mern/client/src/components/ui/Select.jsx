@@ -47,7 +47,7 @@ const Select = React.forwardRef(({
                 {label && (
                     <label
                         className={twMerge(
-                            "absolute left-4 top-[-10px] text-xs bg-white dark:bg-slate-900 px-1 text-primary font-medium transition-all duration-200",
+                            "absolute left-4 top-[-10px] text-xs bg-white/80 dark:bg-slate-900/80 backdrop-blur-md rounded-md px-1.5 py-0.5 text-primary font-medium transition-all duration-200 shadow-sm",
                             Icon ? "left-10" : "left-4"
                         )}
                     >

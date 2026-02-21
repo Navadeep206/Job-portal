@@ -53,24 +53,8 @@ function App() {
             <Route path="/register" element={<Register />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/reset-password/:token" element={<ResetPassword />} />
-            <Route
-              path="/saved-jobs"
-              element={
-                <ProtectedRoute roles={["user"]}>
-                  <SavedJobs />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/job-alerts"
-              element={
-                <ProtectedRoute roles={["user"]}>
-                  <JobAlerts />
-                </ProtectedRoute>
-              }
-            />
-          </Route>
 
+          </Route>
 
           {/* Dashboard Routes with Sidebar */}
           <Route element={
@@ -157,6 +141,22 @@ function App() {
               element={
                 <ProtectedRoute roles={["user", "recruiter", "admin"]}>
                   <Profile />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/saved-jobs"
+              element={
+                <ProtectedRoute roles={["user"]}>
+                  <SavedJobs />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/job-alerts"
+              element={
+                <ProtectedRoute roles={["user"]}>
+                  <JobAlerts />
                 </ProtectedRoute>
               }
             />
